@@ -1,22 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import logoa from '../../../photos/logo2.png';
-import logob from '../../../photos/saylogo5.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { TfiMenu } from 'react-icons/tfi';
 import { userLoginContext } from '../../components/contexts/userLoginContext';
 import { useContext } from 'react';
+import logoa from '../../../photos/logo2.png';
+import logob from '../../../photos/saylogo5.png';
 import './Header1.css';
 
 function Header1() {
   const { logoutUser, userLoginStatus, currentUser } = useContext(userLoginContext);
-  const [collapseOpen, setCollapseOpen] = useState(false); // State for Bootstrap collapse
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown menu
+  const [collapseOpen, setCollapseOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navbarRef = useRef(null);
+  const navigate = useNavigate(); 
 
   const handleOutsideClick = (event) => {
     if (navbarRef.current && !navbarRef.current.contains(event.target)) {
       setDropdownOpen(false);
-      setCollapseOpen(false); // Ensure collapse closes on outside click
+      setCollapseOpen(false);
     }
   };
 
@@ -26,12 +27,17 @@ function Header1() {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
-    setCollapseOpen(false); // Close collapse when opening dropdown
+    setCollapseOpen(false);
   };
 
   const handleLinkClick = () => {
     setDropdownOpen(false);
-    setCollapseOpen(false); // Close collapse on link click
+    setCollapseOpen(false);
+  };
+
+  const handleLogout = () => {
+    logoutUser(); 
+    navigate('/home');
   };
 
   useEffect(() => {
@@ -106,24 +112,24 @@ function Header1() {
                             className='nav-link links dropdown-toggle'
                             role='button'
                             id='navbarDropdown'
-                            onClick={toggleDropdown} 
+                            onClick={toggleDropdown}
                             aria-expanded={dropdownOpen ? 'true' : 'false'}
                           >
                             {currentUser.username}
                           </span>
                           <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} aria-labelledby='navbarDropdown'>
                             <li>
-                              <Link to='/edit-profile' className='dropdown-item' onClick={handleLinkClick}>
+                              <Link to='/editprofile' className='dropdown-item' onClick={handleLinkClick}>
                                 Edit Profile
                               </Link>
                             </li>
                             <li>
-                              <Link to='/add-event' className='dropdown-item' onClick={handleLinkClick}>
+                              <Link to='/addevent' className='dropdown-item' onClick={handleLinkClick}>
                                 Add Event
                               </Link>
                             </li>
                             <li>
-                              <span className='dropdown-item' onClick={logoutUser}>
+                              <span className='dropdown-item' onClick={handleLogout}>
                                 Logout
                               </span>
                             </li>

@@ -46,6 +46,7 @@ function Register() {
                 type="text"
                 id="username"
                 className="form-control"
+                 placeholder="Enter your username"
                 {...register("username", { required: true })}
               />
                {errors.username?.type === "required" && (
@@ -65,15 +66,16 @@ function Register() {
         </div>
         <div className='form-element'>
         <label htmlFor="password" className="form-label">
-                Password
+                Confirm Password
               </label>
               <input
                 type="password"
                 id="password"
                 className="form-control"
+                 placeholder="Confirm your password"
                 {...register("password", { required: true })}
               />
-              {/* validation error message on password */}
+             
               {errors.password?.type === "required" && (
                 <p className="text-danger lead">*Password is required</p>
               )}
@@ -96,6 +98,7 @@ function Register() {
                 type="email"
                 id="email"
                 className="form-control"
+                 placeholder="Enter your email"
                 {...register("email", { required: true })}
               />
               {/* validation error message on email */}

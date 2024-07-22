@@ -1,11 +1,11 @@
 {
   "users": [
     {
-      "id": "a32c",
-      "username": "Nikhil",
-      "password": "12345",
+      "username": "nikhil",
+      "password": "12346",
       "mobile": "9177590577",
-      "email": "nikhilpolimetla852@gmail.com"
+      "email": "nikhilpolimetla852@gmail.com",
+      "id": "a32c"
     }
   ]
 }

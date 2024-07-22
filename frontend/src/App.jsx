@@ -9,6 +9,8 @@ import News from "./components/news/News";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import Gallery from "./components/gallery/Gallery";
+import EditProfile from "./components/editprofile/EditProfile";
+import AddEvent from "./components/addevent/AddEvent";
 
 function App() {
   const browserRouter = createBrowserRouter([
@@ -54,7 +56,15 @@ function App() {
         { 
           path: "gallery/:eventName",
            element: <Gallery />
-           }
+        },
+        {
+          path :"editprofile",
+          element:<EditProfile/>
+        },
+        {
+          path:"addevent",
+          element:<AddEvent/>
+        }
       ]
     }
   ]);
