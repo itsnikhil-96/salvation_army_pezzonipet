@@ -1,0 +1,8 @@
+/* AboutUs.css */
+.church-location-img {
+  width: 300px; /* Example width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Example border radius */
+  display: block; /* Ensures the image is treated as a block element */
+  margin-top: 10px; /* Example margin top */
+}

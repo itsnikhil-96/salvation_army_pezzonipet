@@ -1,0 +1,28 @@
+.form-element
+{
+    color: rgb(14, 4, 54);
+    font-weight: bold;
+    margin-top: 1.2em;
+}
+.login-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #e4d9d9;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  .login-register {
+    margin-top: 20px; 
+    font-size: 1.2rem;
+  }
+  
+  .login-link{
+    color:navy;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px; 
+  }
+  
+  
+  

@@ -1,0 +1,25 @@
+
+*
+{
+  margin: 0;
+  padding: 0;
+}
+
+
+.heading
+{
+    font-family: "Domine", serif; 
+    display: grid;
+    text-align: justify;
+    justify-content: center;
+}
+.english{
+    
+    text-align: justify;
+    font-family: "Tinos", serif;
+  }
+  .container
+  {
+    padding: 0;
+    overflow-x: hidden;
+  }

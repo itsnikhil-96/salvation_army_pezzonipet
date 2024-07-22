@@ -1,0 +1,10 @@
+.root-layout {
+    display: flex;
+    flex-direction: column;
+    
+    z-index: 900; /* Ensure full viewport height */
+  }
+.outlet
+{
+  min-height: 100vh;
+}

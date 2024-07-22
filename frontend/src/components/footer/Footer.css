@@ -1,0 +1,45 @@
+
+* {
+   margin: 0;
+   padding: 0;
+}
+.footerrow
+{
+  font-family: "Domine", serif;
+  padding-left: 20px;
+  width: 100%;
+}
+.footername
+{
+   color:aqua;
+}
+.footer-links
+{
+   color:darkgoldenrod;
+} 
+.twit:hover{
+   color: gray;
+}
+.twit ,.facebook ,.insta,.utube{
+   color:rgb(15, 14, 14);
+   border-radius: 100%;
+   padding: 6px;
+}
+.facebook:hover
+{
+   color: blue;
+}
+.utube:hover{
+   color: red;
+}
+.insta:hover{
+   color:rgb(197, 16, 131)
+}
+.foot-link:hover{
+  
+   color: aqua;
+}
+.foot-link{
+   color: white;
+   padding: 3px 3px;
+}
