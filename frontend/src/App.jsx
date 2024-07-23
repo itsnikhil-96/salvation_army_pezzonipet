@@ -11,6 +11,7 @@ import Register from "./components/register/Register";
 import Gallery from "./components/gallery/Gallery";
 import EditProfile from "./components/editprofile/EditProfile";
 import AddEvent from "./components/addevent/AddEvent";
+import PhotoGallery from "./components/photogallery/PhotoGallery";
 
 function App() {
   const browserRouter = createBrowserRouter([
@@ -64,6 +65,10 @@ function App() {
         {
           path:"addevent",
           element:<AddEvent/>
+        },
+        {
+          path:"photogallery",
+          element:<PhotoGallery/>
         }
       ]
     }
