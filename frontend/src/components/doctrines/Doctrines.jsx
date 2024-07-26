@@ -4,7 +4,8 @@ function Doctrine() {
   return (
     <div>
       <h2 className='heading mt-4 fs-4'>The Doctrines of Salvation Army</h2>
-      <ol className='english '>
+     <div className='shadow-sm p-4 mb-2'>
+     <ol className='english '>
         <h4 className='sub-heading fs-3'>English</h4>
         <li>We believe that the Scriptures of the Old and New Testaments were given by inspiration of God, and that they only constitute the Divine rule of Christian faith and practice.</li>
         <li>We believe that there is only one God, who is infinitely perfect, the Creator, Preserver, and Governor of all things, and who is the only proper object of religious worship.</li>
@@ -18,7 +19,9 @@ function Doctrine() {
         <li>We believe that it is the privilege of all believers to be wholly sanctified, and that their whole spirit and soul and body may be preserved blameless unto the coming of our Lord Jesus Christ.</li>
         <li>We believe in the immortality of the soul, the resurrection of the body, in the general judgement at the end of the world, in the eternal happiness of the righteous, and in the endless punishment of the wicked.</li>
       </ol>
-      <ol  className='telugu '>
+     </div>
+     <div className='shadow-sm p-4 mt-4'>
+     <ol  className='telugu '>
         <h4 className=' fs-4 sub-heading'>Telugu</h4>
        <li>పాత, క్రొత్త నిబంధన లేఖనములు దైవావేశము వలన నీయబడె ననియు వాటియందు క్రైస్తవ విశ్వాస ఆచార క్రమములున్నవనియు మేము నమ్ముచున్నాము.</li>
        <li>ఒక్కడే దేవుడున్నాడనియు, ఆయన అనంత పరిపూర్ణుడును, సమస్తము నకు సృష్టికర్తయును, కాపాడువాడును, యేలువాడనియును, ఆయన మాత్రమే మాతారాధన కర్హుడని మేము నమ్ముచున్నాము.</li>
@@ -32,6 +35,7 @@ function Doctrine() {
        <li>పరిపూర్ణ పరిశుద్ధత పొందిన వారియొక్కసంపూర్ణ మనస్సు, ఆత్మ, శరీరము, మన ప్రభువైన యేసుక్రీస్తు రాక కొరకు నిందారహితముగా కాపాడబడుట నమ్ము వారందరి యొక్క ఆధిక్యతయని మేము నమ్ముచున్నాము (1థెస్స 5:23)</li>
        <li>ఆత్మ అక్షయమైనదనియు, శరీరము పురుత్థానమగుననియు, లోకాంత మున తీర్పుయున్నదనియు, నీతిమంతులు నిత్యసుఖమనుభవింతు రనియు, దుష్టులు నిత్యనాశనమునకు పోవుదురనియు మేము నమ్ముచున్నాము.</li>
       </ol>
+     </div>
     </div>
   )
 }

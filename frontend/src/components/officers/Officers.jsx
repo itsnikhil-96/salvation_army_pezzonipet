@@ -90,10 +90,10 @@ function Officers() {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">The Officers of Salvation Army - Pezzonipet Corps</h2>
-      <div className="row row-cols-1 row-cols-md-1 row-cols-lg-2">
+      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2">
         {/* Render the officers */}
         {officers.map((officer, index) => (
-          <div key={index} className="col mb-2">
+          <div key={index} className="col mb-2 officersdiv">
             <div className="card mb-3">
               <div className="row no-gutters">
                 <div className="col-md-4">
@@ -115,10 +115,10 @@ function Officers() {
         ))}
       </div>
       <h2 className='text-center mb-4'>Local Officers-Pezzonipet Corps</h2>
-      <div className="row row-cols-1 row-cols-md-1 row-cols-lg-2">
+      <div className="row row-cols-1 row-cols-sm-2 row-cols-md-1 row-cols-lg-2">
         {/* Render the officers */}
         {localofficers.map((officer, index) => (
-          <div key={index} className="col mb-2">
+          <div key={index} className="col mb-2 officersdiv h-100">
             <div className="card mb-3">
               <div className="row no-gutters">
                 <div className="col-md-4">
@@ -131,7 +131,6 @@ function Officers() {
                   <div>
                     <IoCall  className='call'onClick={() => handleCall(officer.phno)} />
                     <LiaWhatsapp  className='whatsapp' onClick={() => handleWhatsApp(officer.phno)}/>
-                    
                   </div>
                 </div>
               </div>

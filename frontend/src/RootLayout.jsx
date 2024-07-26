@@ -9,12 +9,13 @@ function RootLayout()
 {
   return (
     <div className="root-layout">
-      <Header3/>
+      <div className='headerroot'><Header3/></div>
       <div className="container outlet">
         <Outlet />
       </div>
      
-      <Footer />
+     <div className='footerroot'><Footer/></div>
+     
      
     </div>
   );

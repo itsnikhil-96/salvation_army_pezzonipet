@@ -114,16 +114,17 @@ a.nav-link {
       height: 0%;
       padding: 0;
   }
+  a.nav-link {
+    font-size: 1rem;
+    padding: 5px;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .logoa {
       width: 140%;
   }
-  a.nav-link {
-    font-size: 1rem;
-    padding: 3px;
-  }
+ 
   .mainsay
   {
     margin-bottom: 5px;
