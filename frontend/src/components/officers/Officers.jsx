@@ -94,7 +94,7 @@ function Officers() {
         {/* Render the officers */}
         {officers.map((officer, index) => (
           <div key={index} className="col mb-2 officersdiv">
-            <div className="card mb-3">
+            <div className="card mb-3 shadow-sm">
               <div className="row no-gutters">
                 <div className="col-md-4">
                   <img src={officer.image} className="card-img" alt={officer.name} />
@@ -119,7 +119,7 @@ function Officers() {
         {/* Render the officers */}
         {localofficers.map((officer, index) => (
           <div key={index} className="col mb-2 officersdiv h-100">
-            <div className="card mb-3">
+            <div className="card mb-3 shadow-sm">
               <div className="row no-gutters">
                 <div className="col-md-4">
                   <img src={officer.image} className="card-img" alt={officer.name} />

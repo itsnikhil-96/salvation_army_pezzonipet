@@ -96,7 +96,7 @@ function Header1() {
                         </Link>
                       </li>
                       <li className='nav-item'>
-                        <Link to='/news' className='nav-link links' onClick={handleLinkClick}>
+                        <Link to='/events' className='nav-link links' onClick={handleLinkClick}>
                           Events
                         </Link>
                       </li>

@@ -1,0 +1,14 @@
+.eventcard
+{
+    min-height: 370px;
+}
+.eventname
+{
+    color: rgb(161, 18, 128);
+    font-weight:500;
+}
+.card-img {
+    width: 100%;
+    height: 200px; /* Fixed height for consistency */
+    border-radius: 5px; /* Optional: for rounded corners */
+  }

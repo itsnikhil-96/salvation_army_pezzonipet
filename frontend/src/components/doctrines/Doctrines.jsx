@@ -20,7 +20,7 @@ function Doctrine() {
         <li>We believe in the immortality of the soul, the resurrection of the body, in the general judgement at the end of the world, in the eternal happiness of the righteous, and in the endless punishment of the wicked.</li>
       </ol>
      </div>
-     <div className='shadow-sm p-4 mt-4'>
+     <div className='shadow-sm p-4 my-4'>
      <ol  className='telugu '>
         <h4 className=' fs-4 sub-heading'>Telugu</h4>
        <li>పాత, క్రొత్త నిబంధన లేఖనములు దైవావేశము వలన నీయబడె ననియు వాటియందు క్రైస్తవ విశ్వాస ఆచార క్రమములున్నవనియు మేము నమ్ముచున్నాము.</li>

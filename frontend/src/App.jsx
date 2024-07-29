@@ -5,13 +5,13 @@ import Home from './components/home/Home';
 import AboutUs from './components/aboutus/AboutUs';
 import Doctrines from './components/doctrines/Doctrines';
 import Officers from './components/officers/Officers';
-import News from "./components/news/News";
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import Gallery from "./components/gallery/Gallery";
 import EditProfile from "./components/editprofile/EditProfile";
 import AddEvent from "./components/addevent/AddEvent";
 import PhotoGallery from "./components/photogallery/PhotoGallery";
+import Events from "./components/events/Events";
 
 function App() {
   const browserRouter = createBrowserRouter([
@@ -38,10 +38,10 @@ function App() {
            path: "officers",
             element: <Officers /> 
           },
-        {
-           path: "news",
-            element: <News /> 
-          },
+         {
+          path:"events",
+          element :<Events/>
+         },
         {
            path: "login", 
            element: <Login /> 
@@ -55,7 +55,7 @@ function App() {
           element: <Gallery />
          },
         { 
-          path: "gallery/:eventName",
+          path: "gallery/:eventname",
            element: <Gallery />
         },
         {

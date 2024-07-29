@@ -1,0 +1,23 @@
+get http://localhost:5000/event-api/events
+
+###
+
+post http://localhost:5000/event-api/events
+Content-Type: application/json
+
+{
+
+    "eventname":"VBS2024",
+    "events":[]
+}
+
+###
+put http://localhost:5000/event-api/events/ypannual2023
+Content-Type: application/json
+
+{
+    "events":"event6"
+}
+
+###
+delete http://localhost:5000/event-api/events/ypannual2023
