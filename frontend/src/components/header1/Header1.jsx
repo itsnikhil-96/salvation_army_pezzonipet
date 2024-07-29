@@ -91,11 +91,6 @@ function Header1() {
                         </Link>
                       </li>
                       <li className='nav-item'>
-                        <Link to='/photogallery' className='nav-link links' onClick={handleLinkClick}>
-                          Gallery
-                        </Link>
-                      </li>
-                      <li className='nav-item'>
                         <Link to='/events' className='nav-link links' onClick={handleLinkClick}>
                           Events
                         </Link>

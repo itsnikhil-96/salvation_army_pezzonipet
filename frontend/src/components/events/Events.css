@@ -9,6 +9,13 @@
 }
 .card-img {
     width: 100%;
-    height: 200px; /* Fixed height for consistency */
-    border-radius: 5px; /* Optional: for rounded corners */
+    height: 200px; 
+    border-radius: 5px; 
   }
+
+@media (max-width:400px)
+{
+    .card-img{
+        height: 100px;
+    }
+}
