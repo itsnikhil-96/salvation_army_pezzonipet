@@ -19,7 +19,7 @@
 }
 .heading
 {
-    color: blue;
+    color:#005B41;
 }
 @media (max-width: 1000px){
    .prayer-timings{

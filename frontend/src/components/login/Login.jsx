@@ -30,7 +30,7 @@ function Login() {
 
   return (
     <div className='login-container mt-5'>
-      <h2 className='text-center'>Login Page</h2>
+      <h2 className='text-center'>Login (Only Local Officers)</h2>
       {
             err.length!==0&&<p className="fs-1 text-danger">{err}</p>
           }

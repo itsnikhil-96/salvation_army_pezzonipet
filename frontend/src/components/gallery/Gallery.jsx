@@ -12,13 +12,11 @@ function Gallery() {
 
   return (
       <div className="container mt-5">
-          <h1 className="text-center mb-3">{event.eventname} Gallery</h1>
+          <h1 className="text-center mb-3 fs-3 heading">{event.eventname} Gallery</h1>
           <div className="row">
               {event.images.map((image, index) => (
-                  <div key={index} className=" col-lg-2 col-md-3 col-sm-6 col-12 mb-4">
-                      <div className="card">
-                          <img src={image} className="card-img" alt={`Gallery for ${event.eventname}`} />
-                      </div>
+                  <div key={index} className=" col-lg-2 col-md-3 col-sm-6 col-12 mb-4 gallerycol"> 
+                          <img src={image} className="galleryimg" alt={`Gallery for ${event.eventname}`} />
                   </div>
               ))}
           </div>
