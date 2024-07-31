@@ -97,7 +97,7 @@ function Officers() {
             <div className="card mb-3 shadow-sm">
               <div className="row no-gutters">
                 <div className="col-md-4">
-                  <img src={officer.image} className="card-img" alt={officer.name} />
+                  <img src={officer.image} className="officer-img" alt={officer.name} />
                 </div>
                 <div className="card-body col-md-8">
                   <h5 className="card-title mb-1"><b>Name: </b>{officer.name}</h5>
@@ -122,7 +122,7 @@ function Officers() {
             <div className="card mb-3 shadow-sm">
               <div className="row no-gutters">
                 <div className="col-md-4">
-                  <img src={officer.image} className="card-img" alt={officer.name} />
+                  <img src={officer.image} className="officer-img" alt={officer.name} />
                 </div>
                 <div className="card-body col-md-8">
                   <h5 className="card-title mb-1"><b>Name: </b>{officer.name}</h5>

@@ -18,7 +18,7 @@ function Events() {
                     <div key={index} className='col-lg-3 col-md-4 col-sm-6 col-12 mb-4'>
                         <div className='card h-100 bg-light shadow-sm'>
                             <div className="card-body d-flex flex-column justify-content-between">
-                                <img src={event.mainimage} className="card-img img-fluid" alt={event.eventname} />
+                                <img src={event.mainimage} className="eventimg img-fluid" alt={event.eventname} />
                                 <p className="fs-3 mt-3 english shadowbox text-center">
                                     <span className='eventname'>{event.eventname}</span><br /><span className='fs-3'>{event.date}</span>
                                 </p>

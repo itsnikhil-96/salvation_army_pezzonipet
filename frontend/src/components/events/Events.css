@@ -7,18 +7,31 @@
     color: rgb(161, 18, 128);
     font-weight:500;
 }
-.card-img {
-    width: 100%;
-    height: 200px; 
+.eventimg {
+    width: auto;
+    max-height: 170px; 
+    min-height: 170px;
     border-radius: 5px; 
-  }
+   }
 .color
 {
     color: aqua;
 }
-@media (max-width:400px)
-{
-    .card-img{
-        height: 100px;
+@@media (max-width: 570px) {
+    .eventimg
+    {
+      width: 40%;
+      min-height: 300px;
     }
-}
+    
+  }
+  
+  @media (max-width: 430px) {
+    .eventimg
+    {
+      width: 100%;
+      min-height: 100px;
+    }
+    
+  }
+  
