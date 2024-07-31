@@ -12,7 +12,10 @@
     height: 200px; 
     border-radius: 5px; 
   }
-
+.color
+{
+    color: aqua;
+}
 @media (max-width:400px)
 {
     .card-img{

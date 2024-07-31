@@ -19,11 +19,11 @@ function Events() {
                         <div className='card h-100 bg-light shadow-sm'>
                             <div className="card-body d-flex flex-column justify-content-between">
                                 <img src={event.mainimage} className="card-img img-fluid" alt={event.eventname} />
-                                <p className="fs-3 mt-3 english text-center">
+                                <p className="fs-3 mt-3 english shadowbox text-center">
                                     <span className='eventname'>{event.eventname}</span><br /><span className='fs-3'>{event.date}</span>
                                 </p>
                                 <button 
-                                    className="btn btn-primary mt-auto" 
+                                    className="btn btn-primary color mt-auto" 
                                     onClick={() => handleViewGallery(event.eventname)}>
                                     View Gallery
                                 </button>

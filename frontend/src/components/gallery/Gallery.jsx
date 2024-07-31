@@ -19,6 +19,7 @@ function Gallery() {
                           <img src={image} className="galleryimg" alt={`Gallery for ${event.eventname}`} />
                   </div>
               ))}
+              
           </div>
       </div>
   );

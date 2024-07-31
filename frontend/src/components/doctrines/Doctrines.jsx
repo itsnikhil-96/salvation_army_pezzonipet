@@ -4,8 +4,8 @@ function Doctrine() {
   return (
     <div>
       <h2 className='heading mt-4 fs-4'>The Doctrines of Salvation Army</h2>
-     <div className='shadow-sm p-4 mb-2'>
-     <ol className='english '>
+     <div className='shadowbox english p-4 mb-2 mt-4'>
+     <ol className=''>
         <h4 className='sub-heading fs-3'>English</h4>
         <li>We believe that the Scriptures of the Old and New Testaments were given by inspiration of God, and that they only constitute the Divine rule of Christian faith and practice.</li>
         <li>We believe that there is only one God, who is infinitely perfect, the Creator, Preserver, and Governor of all things, and who is the only proper object of religious worship.</li>
@@ -20,8 +20,8 @@ function Doctrine() {
         <li>We believe in the immortality of the soul, the resurrection of the body, in the general judgement at the end of the world, in the eternal happiness of the righteous, and in the endless punishment of the wicked.</li>
       </ol>
      </div>
-     <div className='shadow-sm p-4 my-4'>
-     <ol  className='telugu '>
+     <div className='shadowbox p-4 my-4 telugu'>
+     <ol  className=''>
         <h4 className=' fs-4 sub-heading'>Telugu</h4>
        <li>పాత, క్రొత్త నిబంధన లేఖనములు దైవావేశము వలన నీయబడె ననియు వాటియందు క్రైస్తవ విశ్వాస ఆచార క్రమములున్నవనియు మేము నమ్ముచున్నాము.</li>
        <li>ఒక్కడే దేవుడున్నాడనియు, ఆయన అనంత పరిపూర్ణుడును, సమస్తము నకు సృష్టికర్తయును, కాపాడువాడును, యేలువాడనియును, ఆయన మాత్రమే మాతారాధన కర్హుడని మేము నమ్ముచున్నాము.</li>

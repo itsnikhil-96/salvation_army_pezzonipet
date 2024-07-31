@@ -10,6 +10,10 @@
   font-size: 1.4rem;
   text-align: left;
 }
+
+.shadowbox{
+  box-shadow: 0px 0px 4px !important;
+}
 .sub-heading
 {
   font-family: "Domine", serif;

@@ -12,6 +12,7 @@ import EditProfile from "./components/editprofile/EditProfile";
 import AddEvent from "./components/addevent/AddEvent";
 import PhotoGallery from "./components/photogallery/PhotoGallery";
 import Events from "./components/events/Events";
+import Home1 from "./components/home1/Home1";
 
 function App() {
   const browserRouter = createBrowserRouter([
@@ -20,11 +21,11 @@ function App() {
       element: <RootLayout />,
       children: [
         { path: "", 
-          element: <Home /> 
+          element: <Home1 /> 
         },
         {
            path: "home", 
-          element: <Home />
+          element: <Home1 />
          },
         {
            path: "aboutus",

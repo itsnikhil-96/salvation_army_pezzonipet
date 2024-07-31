@@ -1,0 +1,42 @@
+/* Home1.css */
+
+.carousel-inner {
+    width: 100%;
+    height: auto; 
+}
+
+.carousel-img {
+    height: 500px; 
+    width: 100%; 
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); 
+    border-radius: 50%; 
+    padding: 10px; 
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%; 
+}
+
+.carousel-control-prev-icon:after,
+.carousel-control-next-icon:after {
+    font-size: 20px; 
+    color: white; /* Changes the icon color */
+}
+.captionpara
+{
+    color: black;
+}
+@media (max-width:600px){
+    .carousel-img {
+        height: 300px; 
+    }
+    .captionpara
+        {
+            font-size: 30px;
+        }
+}

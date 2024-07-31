@@ -1,9 +1,14 @@
 .galleryimg {
     width: 100%;
     height: 300px; /* Set a fixed height */
-   
     border-radius: 5px;
+    transition: transform 0.3s ease; 
   }
+  
+
+.galleryimg:hover {
+    transform: scale(1.05); 
+}
 @media (max-width:570px)
 {
     .galleryimg
