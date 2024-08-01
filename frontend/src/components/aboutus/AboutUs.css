@@ -1,8 +1,16 @@
-/* AboutUs.css */
 .church-location-img {
-  width: 300px; /* Example width */
-  height: auto; /* Maintain aspect ratio */
-  border-radius: 8px; /* Example border radius */
-  display: block; /* Ensures the image is treated as a block element */
-  margin-top: 10px; /* Example margin top */
+  width: 300px; 
+  height: auto; 
+  border-radius: 8px; 
+  display: block;
+  margin-top: 10px; 
+}
+.right-image {
+  max-width: 200px;
+  max-height: 240px;
+  width: 100%; 
+  height: auto; 
+  margin: 10px;
+  float: right; 
+  margin-left: 15px; 
 }
