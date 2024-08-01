@@ -31,7 +31,12 @@
 {
     color: black;
 }
-
+.chruchlogo
+{
+    height:auto;
+    width: 100%;
+    overflow: cover;
+}
 @media (max-width:600px){
     .carousel-img {
         height: 300px; 
@@ -40,4 +45,9 @@
         {
             font-size: 30px;
         }
+    .chruchlogo
+    {
+        width: 60%;
+    
+    }
 }

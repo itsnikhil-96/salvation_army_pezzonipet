@@ -5,6 +5,7 @@ import pic13 from '../../../photos/slides/homeleagueslide.jpg';
 import pic14 from '../../../photos/slides/fastingprayerslide.jpg';
 import pic15 from '../../../photos/slides/youthmeetingslide.jpg';
 import pic16 from '../../../photos/slides/allnightprayer.jpg';
+import logo from '../../../photos/newchruch logo.jpeg';
 
 import './Home1.css';
 
@@ -41,12 +42,28 @@ function Home1() {
         <span className="visually-hidden">Next</span>
       </button>
     </div>
-    <div className='history'>
-         <h3 className='mt-3 fs-3 text-center heading'>History of Salvation Army Pezzonipet-Corps</h3>
-         <p className='english'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloremque, quas perferendis soluta tenetur blanditiis maxime commodi doloribus molestias quidem minus eos labore adipisci culpa eius? Corporis, animi. Magnam dolorum iure, reprehenderit odit cupiditate magni molestiae. Unde blanditiis soluta, doloremque aspernatur tempore magni rerum sapiente sit voluptatem at. Nam iure praesentium eius delectus eligendi cupiditate similique dolorum ut enim exercitationem, eveniet tempore, quos maiores reiciendis ipsum. Numquam iure accusamus placeat optio modi saepe, possimus quis odio ducimus unde laborum fugit ex blanditiis voluptatibus voluptate expedita excepturi animi officia fuga laboriosam facere ipsa vitae magnam. Soluta debitis laborum, praesentium voluptas illum neque.</p>
-         <p className='english'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloremque, quas perferendis soluta tenetur blanditiis maxime commodi doloribus molestias quidem minus eos labore adipisci culpa eius? Corporis, animi. Magnam dolorum iure, reprehenderit odit cupiditate magni molestiae. Unde blanditiis soluta, doloremque aspernatur tempore magni rerum sapiente sit voluptatem at. Nam iure praesentium eius delectus eligendi cupiditate similique dolorum ut enim exercitationem, eveniet tempore, quos maiores reiciendis ipsum. Numquam iure accusamus placeat optio modi saepe, possimus quis odio ducimus unde laborum fugit ex blanditiis voluptatibus voluptate expedita excepturi animi officia fuga laboriosam facere ipsa vitae magnam. Soluta debitis laborum, praesentium voluptas illum neque.</p>
-         <p className='english'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloremque, quas perferendis soluta tenetur blanditiis maxime commodi doloribus molestias quidem minus eos labore adipisci culpa eius? Corporis, animi. Magnam dolorum iure, reprehenderit odit cupiditate magni molestiae. Unde blanditiis soluta, doloremque aspernatur tempore magni rerum sapiente sit voluptatem at. Nam iure praesentium eius delectus eligendi cupiditate similique dolorum ut enim exercitationem, eveniet tempore, quos maiores reiciendis ipsum. Numquam iure accusamus placeat optio modi saepe, possimus quis odio ducimus unde laborum fugit ex blanditiis voluptatibus voluptate expedita excepturi animi officia fuga laboriosam facere ipsa vitae magnam. Soluta debitis laborum, praesentium voluptas illum neque.</p>
-         <p className='english'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Doloremque, quas perferendis soluta tenetur blanditiis maxime commodi doloribus molestias quidem minus eos labore adipisci culpa eius? Corporis, animi. Magnam dolorum iure, reprehenderit odit cupiditate magni molestiae. Unde blanditiis soluta, doloremque aspernatur tempore magni rerum sapiente sit voluptatem at. Nam iure praesentium eius delectus eligendi cupiditate similique dolorum ut enim exercitationem, eveniet tempore, quos maiores reiciendis ipsum. Numquam iure accusamus placeat optio modi saepe, possimus quis odio ducimus unde laborum fugit ex blanditiis voluptatibus voluptate expedita excepturi animi officia fuga laboriosam facere ipsa vitae magnam. Soluta debitis laborum, praesentium voluptas illum neque.</p>
+    <div className='history my-5'>
+         <h3 className='mb-5 fs-3 text-center heading'>History of Salvation Army Pezzonipet-Corps</h3>
+         <div className='row'>
+    <div className='col-12 col-sm-12 col-md-8 col-lg-9'>
+        <div className='english'>
+        <p>The Salvation Army is a Christian Chruch and international charitable organization founded by <b>William Booth</b> and his <b>wife Catherine</b> in the year 1865.
+              It was first named as East London Christian Mission.It's headquarter's in London, England.In 1878. Booth reorganized the mission, becoming its first general and introducing the military structure, which it has retained as a matter of tradition.
+              Salvation Army has 9 hospitals and more than 100 schools in India.Its national secretariat is in Kolkata, West Bengal.
+          </p>
+          <p>
+          The Salvation Army is driven by spiritual principles that manifest practically through evangelical, social, educational, and healthcare initiatives. 
+          Its mission is to guide individuals towards a fulfilling life in connection with Christ, as revealed in the Scriptures, and exemplified through righteous living in unity and peace with others.
+          </p>   
+          <p>Some Salvationists become local officers or spiritual leaders within their corps and they will be having their seperate duties which are to be 
+            performed by them. Every event is coordinated by them and they serve as the backbone of organization.
+          </p>  
+       </div>
+    </div>
+    <div className='col-12 col-sm-12 col-md-4 col-lg-3 text-center'>
+        <img src={logo}  className='chruchlogo' alt='Description of the image' />
+    </div>
+</div>
 
     </div>
     </div>
