@@ -38,8 +38,8 @@ function AboutUs() {
           </p>
       </div>
       <h5 className='mt-3'><b className='english'>Location:</b></h5>
-      <a href='https://maps.app.goo.gl/Va51RnYwgVhkXJF76'>
-        <img src={churchlocation} className='mt-2 church-location-img' alt='Church Location' />
+      <a href='https://maps.app.goo.gl/Va51RnYwgVhkXJF76' >
+        <img src={churchlocation} className='my-3 church-location-img' alt='Church Location' />
       </a>
     </div>
   );
