@@ -47,36 +47,46 @@ eventApp.post("/events", expressAsyncHandler(async(req, res) =>
 }));
 
 //adding pics to already existing event
-eventApp.put("/events/:eventname",expressAsyncHandler(async(req,res)=>
-{
-      //get usersCollection obj
-      const events = req.app.get("events");
 
-      //get new Event from client
-      const newEvent=req.body.events;
-      
-      //checking if that pic is already existed
-      let existingEvent = await events.findOne({events:newEvent})
+eventApp.post("/events/", expressAsyncHandler(async (req, res) => {
+    // Get events collection object
+    const events = req.app.get("events");
 
-      //if existed
-      if(existingEvent!=null)
-      {
-        res.send({message:"already that pic is existed"})
-      }
+    // Get new events from client (array of images)
+    const newEvents = req.body.events;
 
-      //if not existed
-      else
-      {
-      //get username form url
-      const eventName=req.params.eventname;
-      
-      //add event
-      let result=await events.updateOne({eventname:eventName},{$push:{events:newEvent}})
+    // Get event name from URL
+    const eventName = req.body.eventname;
 
-      //sending response
-      res.send({message:"event added successfully"})
-      }
+    let existingEvent = await events.findOne({eventname:eventName})
+    if(existingEvent==null)
+    {
+      res.send({message:"Event name alrrady Exists"})
+    }
+
+    // Initialize an array to store messages
+    const responseMessages = [];
+
+    for (const newEvent of newEvents) {
+        // Checking event already exists
+        let existingEvent = await events.findOne({ eventname: eventName, events: newEvent });
+
+        // If the event exists, add a message
+        if (existingEvent != null) {
+            responseMessages.push({ event: newEvent, message: "already exists" });
+        }
+        // If the event does not exist, add it
+        else {
+            await events.updateOne({ eventname: eventName }, { $push: { events: newEvent } });
+            responseMessages.push({ event: newEvent, message: "added successfully" });
+        }
+    }
+
+    // Send response with all messages
+    res.send(responseMessages);
 }));
+
+
 
 //deleting an event 
 eventApp.delete("/events/:eventname",expressAsyncHandler(async(req,res)=>

@@ -24,7 +24,7 @@ function Login() {
 
   useEffect(() => {
     if (userLoginStatus === true) {
-      navigate("/gallery");
+      navigate("/addevent");
     }
   }, [userLoginStatus]);
 

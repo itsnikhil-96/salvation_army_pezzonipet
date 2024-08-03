@@ -38,7 +38,7 @@
   }
   
   .slide-from-left {
-    animation: slideFromLeft 5s ease forwards;
+    animation: slideFromLeft 1s ease forwards;
   }
 
   @keyframes slideFromRight {

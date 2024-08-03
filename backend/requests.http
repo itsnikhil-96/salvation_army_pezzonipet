@@ -12,12 +12,38 @@ Content-Type: application/json
 }
 
 ###
-put http://localhost:5000/event-api/events/ypannual2023
+put http://localhost:5000/event-api/events/VBS 2024
 Content-Type: application/json
 
 {
-    "events":"event6"
+
+    "events": ["event1","event2","event4"]
 }
 
 ###
 delete http://localhost:5000/event-api/events/ypannual2023
+
+###
+get http://localhost:5000/user-api/users
+
+###
+post http://localhost:5000/user-api/user
+Content-Type: application/json
+
+{
+    "fullname":"nikhil",
+    "username":"nikhil",
+    "password":"nikhil",
+    "email":"nikhil@gmail.com"
+}
+
+###
+post http://localhost:5000/user-api/login
+Content-Type: application/json
+
+{
+    
+    "username":"nikhil",
+    "password":"nikhil"
+   
+}

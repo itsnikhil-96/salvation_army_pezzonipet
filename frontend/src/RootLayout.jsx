@@ -15,8 +15,6 @@ function RootLayout()
       </div>
      
      <div className='footerroot'><Footer/></div>
-     
-     
     </div>
   );
 }

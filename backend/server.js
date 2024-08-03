@@ -29,15 +29,24 @@ mClient.connect()
     // Connecting to events collection
     const events = database.collection('events');
 
+    //connecting to users collection
+    const users=database.collection('users');
+
     app.set('events',events);
+    app.set('users',users);
 
     console.log('Database connection successful');
 
     // Import eventApp express object
     const eventApp = require("./API/eventsApi");
 
+    //Importing userApp express object
+    const userApp=require("./API/userApi");
+
     // Use eventApp for /event-api route
     app.use("/event-api", eventApp);
+
+    app.use("/user-api",userApp);
 
     app.use('*',(req,res,next)=>{
       console.log(req.path)
