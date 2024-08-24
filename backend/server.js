@@ -1,66 +1,50 @@
-
-const exp = require('express');
-const app = exp();
-
+const express = require('express');
 const cors = require('cors');
+require('dotenv').config();  // Load environment variables from .env file
 
-// Configuring CORS
+const app = express();
+
+// Use CORS to allow requests from the frontend
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin: "http://localhost:5173"  // Update this if your frontend is hosted elsewhere
 }));
 
-// Loading environment variables
-require('dotenv').config();
+// Middleware to parse JSON
+app.use(express.json());
 
-// Import MongoClient
+// Import MongoClient from MongoDB
 const { MongoClient } = require("mongodb");
-
-// Create MongoClient object
-let mClient = new MongoClient(`mongodb://127.0.0.1:27017/`);
-
-// Middleware for parsing JSON bodies
-app.use(exp.json());
+const mClient = new MongoClient(process.env.DB_URL);
 
 mClient.connect()
   .then((connectionObj) => {
-    // Connecting to salvation army database
     const database = connectionObj.db('salvationarmy');
-    
-    // Connecting to events collection
-    const events = database.collection('events');
+    app.set('events', database.collection('events'));
+    app.set('users', database.collection('users'));
 
-    //connecting to users collection
-    const users=database.collection('users');
+    // Import and use eventApp and userApp express routers
+    const eventsApp = require("./API/eventsApi");
+    const usersApp = require("./API/userApi");
 
-    app.set('events',events);
-    app.set('users',users);
+    app.use("/event-api", eventsApp);
+    app.use("/user-api", usersApp);
 
-    console.log('Database connection successful');
-
-    // Import eventApp express object
-    const eventApp = require("./API/eventsApi");
-
-    //Importing userApp express object
-    const userApp=require("./API/userApi");
-
-    // Use eventApp for /event-api route
-    app.use("/event-api", eventApp);
-
-    app.use("/user-api",userApp);
-
-    app.use('*',(req,res,next)=>{
-      console.log(req.path)
-      res.send({message:`Invalid path`})
-    })
+    // Handle invalid paths
+    app.use('*', (req, res) => {
+      console.log(`Invalid path: ${req.path}`);
+      res.status(404).send({ message: 'Invalid path' });
+    });
 
     // Error handling middleware
     app.use((err, req, res, next) => {
-      res.status(500).send({ message: "Error occurred", errorMessage: err.message });
+      console.error("Error occurred:", err);  // Log the error
+      res.status(500).send({ message: "An error occurred", errorMessage: err.message });
     });
-
-    // Assigning port number
-    app.listen(5000, () => console.log("Server running on port 5000"));
+    
+    // Start the server on the specified port
+    const PORT = process.env.PORT;
+    app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
   })
-  .catch(err => {
-    console.error("Failed to connect to the database", err);
+  .catch((err) => {
+    console.error("Database connection failed:", err.message);
   });

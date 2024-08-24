@@ -46,7 +46,6 @@ function Header1() {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
-
   return (
     <div className='header1 pt-2'>
       <div className='row mainsay d-flex flex-wrap'>

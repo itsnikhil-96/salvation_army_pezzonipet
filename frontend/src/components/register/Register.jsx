@@ -1,10 +1,14 @@
 import React from 'react';
 import '../login/Login.css';
+import { useContext } from "react";
+import { userLoginContext } from "../../components/contexts/userLoginContext";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Register() {
+  let { loginUser, userLoginStatus} = useContext(userLoginContext);
+
   let {
     register,
     handleSubmit,
@@ -18,15 +22,18 @@ function Register() {
 
   async function onUserRegister(newUser) {
     try {
-      let res = await fetch("http://localhost:3000/users", {
+      let res = await fetch("http://localhost:5000/user-api/user", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(newUser),
       });
-
-      if (res.status === 201) {
-        //navigate to Login component
+       console.log(res);
+      if (res.status === 200) {
+        userLoginStatus=true;
+        
+        console.log(userLoginStatus);
         navigate("/home");
+
       }
     } catch (err) {
       console.log("err is ", err);

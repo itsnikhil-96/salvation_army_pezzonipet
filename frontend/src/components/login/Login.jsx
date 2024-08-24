@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 function Login() {
   let { loginUser, userLoginStatus ,err} = useContext(userLoginContext);
-  //const [userLoginErr, setUserLoginErr] = useState('')
   const navigate = useNavigate();
 
   let {
@@ -19,7 +18,6 @@ function Login() {
   //on user submit
   function onUserLogin(userCred) {
     loginUser(userCred);
-    console.log(userLoginStatus);
   }
 
   useEffect(() => {
