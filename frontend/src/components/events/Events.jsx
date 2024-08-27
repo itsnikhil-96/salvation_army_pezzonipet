@@ -16,7 +16,7 @@ function Events() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch('http://localhost:5000/event-api/events');
+                const response = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events');
                 if (response.ok) {
                     const data = await response.json();
                     setEvents(data.payload);
