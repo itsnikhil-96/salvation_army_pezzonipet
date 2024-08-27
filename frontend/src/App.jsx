@@ -10,10 +10,8 @@ import Register from "./components/register/Register";
 import Gallery from "./components/gallery/Gallery";
 import EditProfile from "./components/editprofile/EditProfile";
 import AddEvent from "./components/addevent/AddEvent";
-import PhotoGallery from "./components/photogallery/PhotoGallery";
 import Events from "./components/events/Events";
 import Home1 from "./components/home1/Home1";
-import AddEvent1 from "./components/addevent/AddEvent1";
 
 function App() {
   const browserRouter = createBrowserRouter([
