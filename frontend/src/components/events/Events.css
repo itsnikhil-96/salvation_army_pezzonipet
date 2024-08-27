@@ -7,6 +7,11 @@
     color: rgb(161, 18, 128);
     font-weight:500;
 }
+
+.container .row:first-child {
+  margin-top: 70px; 
+}
+
 /* Events.css */
 .modal {
   position: fixed;
