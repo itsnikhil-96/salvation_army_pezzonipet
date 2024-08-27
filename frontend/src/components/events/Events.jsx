@@ -89,17 +89,21 @@ function Events() {
         }
     }, []);
 
-    if (loading) {
-        return <div className='loading'>Loading Events please Wait</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
     return (
-        <div className="container mt-3">
+        <div className="container mt-3 position-relative">
+            {/* Conditionally render Add Event button */}
+            {userLoginStatus && (
+                <button 
+                    className="btn btn-success position-absolute top-0 end-0 mt-3 me-3"
+                    onClick={() => navigate('/addevent')}
+                >
+                    Add Event
+                </button>
+            )}
+
             <div className='row text-center'>
+                {loading && <div className='loading'>Loading Events please Wait</div>}
+                {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
                     <div key={index} className='col-lg-3 col-md-4 col-sm-6 col-12 mb-4'>
                         <div className='card h-100 bg-light shadow-sm'>
