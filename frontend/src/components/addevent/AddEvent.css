@@ -12,10 +12,10 @@
   flex-direction: column;
   gap: 15px;
 }
-.error-messdage
+.error-message
 {
   color: red;
-  text-align: center;
+  align-items: center;
 }
 .form-group {
   display: flex;

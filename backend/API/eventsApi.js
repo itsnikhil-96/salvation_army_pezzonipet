@@ -25,8 +25,11 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
         {
             res.status(401).send({ message: 'Event already Existed' });
         }
+        else
+        {
         await eventsCollection.insertOne(newEvent);
         res.status(201).send({ message: 'Event created successfully', event: newEvent });
+        }
     } catch (error) {
         console.error('Error creating event:', error);
         res.status(500).send({ message: 'Failed to create event', error: error.message });
