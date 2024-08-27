@@ -13,7 +13,7 @@ function UserLoginStore({ children }) {
 async function loginUser(userCred) {
   console.log("Attempting to log in with credentials:", userCred);
   try {
-    let res = await fetch('http://localhost:5000/user-api/login', {
+    let res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

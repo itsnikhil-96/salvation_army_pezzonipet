@@ -22,7 +22,7 @@ function Register() {
 
   async function onUserRegister(newUser) {
     try {
-      let res = await fetch("http://localhost:5000/user-api/user", {
+      let res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(newUser),

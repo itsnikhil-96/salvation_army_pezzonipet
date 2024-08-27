@@ -57,7 +57,7 @@ function Events() {
         if (username === currentUser.username) {
             try {
                 const encodedEventName = encodeURIComponent(selectedEvent.eventname);
-                const response = await fetch(`http://localhost:5000/event-api/events?eventname=${encodedEventName}`, {
+                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
                     method: 'DELETE',
                 });
     

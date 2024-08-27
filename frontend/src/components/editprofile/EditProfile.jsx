@@ -13,7 +13,7 @@ function EditProfile() {
     try {
       console.log(modifiedUser);
 
-      const res = await fetch(`http://localhost:3000/users/${currentUser.id}`, {
+      const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/users/${currentUser.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"

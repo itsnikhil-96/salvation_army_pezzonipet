@@ -11,7 +11,7 @@ function Gallery() {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/event-api/events/${eventname}`);
+                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
