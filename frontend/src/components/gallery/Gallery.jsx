@@ -28,7 +28,7 @@ function Gallery() {
     }, [eventname]);
 
     if (loading) {
-        return <div className="container mt-5"><h2>Loading...</h2></div>;
+        return <div><h2 className='loading'>Loading Images Please wait....</h2></div>;
     }
 
     if (error) {
@@ -45,7 +45,20 @@ function Gallery() {
             <div className="row">
                 {event.images.map((image, index) => (
                     <div key={index} className="col-lg-2 col-md-3 col-sm-6 col-12 mb-4 gallerycol">
-                        <img src={`data:image/jpeg;base64,${image}`} className="galleryimg" alt={`Gallery for ${event.eventname}`} />
+                        <div className="gallery-item">
+                            <a 
+                                href={`data:image/jpeg;base64,${image}`} 
+                                download={`image-${index}.jpg`} 
+                                className="gallery-link"
+                            >
+                                <img 
+                                    src={`data:image/jpeg;base64,${image}`} 
+                                    className="galleryimg" 
+                                    alt={`Gallery for ${event.eventname}`} 
+                                />
+                                
+                            </a>
+                        </div>
                     </div>
                 ))}
             </div>

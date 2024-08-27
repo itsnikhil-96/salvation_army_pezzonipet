@@ -4,7 +4,13 @@
     border-radius: 5px;
     transition: transform 0.3s ease; 
   }
-  
+  .loading {
+    color: #290bd3; 
+    font-size: 1.5rem; 
+    text-align: center;
+    margin-top: 20%;
+    font-weight: 600;
+  }
 
 .galleryimg:hover {
     transform: scale(1.05); 

@@ -90,6 +90,11 @@ function Header1() {
                         </Link>
                       </li>
                       <li className='nav-item'>
+                        <Link to='/doctrines' className='nav-link links' onClick={handleLinkClick}>
+                          Songs
+                        </Link>
+                      </li>
+                      <li className='nav-item'>
                         <Link to='/events' className='nav-link links' onClick={handleLinkClick}>
                           Events
                         </Link>

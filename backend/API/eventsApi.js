@@ -1,6 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const { ObjectId } = require('mongodb');
 const eventsApp = express.Router();
 
 const storage = multer.memoryStorage();
@@ -61,5 +60,27 @@ eventsApp.get('/events/:eventname', async (req, res) => {
         res.status(500).send({ message: 'Failed to retrieve event', error: error.message });
     }
 });
+
+// Add a unique ID to your event schema
+eventsApp.delete("/events", async (req, res) => {
+    try {
+        const eventName = decodeURIComponent(req.query.eventname);
+        const eventsCollection = req.app.get('events');
+        const deletionResult = await eventsCollection.deleteOne({ eventname: eventName });
+
+        if (deletionResult.deletedCount === 0) {
+            return res.status(404).send({ message: "Event not found" });
+        }
+
+        res.status(200).send({ message: "Event deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        res.status(500).send({ message: "Failed to delete event", error: error.message });
+    }
+});
+
+
+
+
 
 module.exports = eventsApp;

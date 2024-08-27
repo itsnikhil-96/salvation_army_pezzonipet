@@ -21,14 +21,14 @@ mClient.connect()
     const database = connectionObj.db('salvationarmy');
     app.set('events', database.collection('events'));
     app.set('users', database.collection('users'));
-
+    app.set('deletedevents',database.collection('deletedevents'));
     // Import and use eventApp and userApp express routers
     const eventsApp = require("./API/eventsApi");
     const usersApp = require("./API/userApi");
-
+    const deletedApp = require("./API/deletedApi");
     app.use("/event-api", eventsApp);
     app.use("/user-api", usersApp);
-
+    app.use("/deleted-api",deletedApp);
     // Handle invalid paths
     app.use('*', (req, res) => {
       console.log(`Invalid path: ${req.path}`);

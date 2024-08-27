@@ -5,9 +5,7 @@ import './AddEvent.css';
 function AddEvent() {
   const [eventName, setEventName] = useState('');
   const [dateOfEvent, setDateOfEvent] = useState('');
-  const [mainLogo, setMainLogo] = useState(null);
   const [mainLogoFile, setMainLogoFile] = useState(null); 
-  const [images, setImages] = useState([]);
   const [imagesFiles, setImagesFiles] = useState([]); 
   const [err, setErr] = useState(null);
 
