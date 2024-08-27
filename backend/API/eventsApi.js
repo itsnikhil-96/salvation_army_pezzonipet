@@ -20,7 +20,7 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
             mainLogo,
             images,
         };
-        const alreadyinserted = await eventsCollection.findOne({ eventname: eventName });
+        const alreadyinserted = await eventsCollection.findOne({ eventname });
         if(alreadyinserted)
         {
             res.status(401).send({ message: 'Event already Existed' });
