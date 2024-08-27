@@ -14,10 +14,12 @@
 }
 .message.success {
   color: green; 
+  text-align: center;
 }
 
 .message.error {
   color: red; 
+  text-align: center;
 }
 .form-group {
   display: flex;

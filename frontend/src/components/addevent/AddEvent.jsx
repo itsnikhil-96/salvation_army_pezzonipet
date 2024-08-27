@@ -5,49 +5,22 @@ import './AddEvent.css';
 function AddEvent() {
   const [eventName, setEventName] = useState('');
   const [dateOfEvent, setDateOfEvent] = useState('');
-  const [mainLogoFile, setMainLogoFile] = useState(null); 
-  const [imagesFiles, setImagesFiles] = useState([]); 
-  const [message, setMessage] = useState(''); 
-  const [messageType, setMessageType] = useState(''); 
-  const [err, setErr] = useState(null);
-
+  const [mainLogoFile, setMainLogoFile] = useState(null);
+  const [imagesFiles, setImagesFiles] = useState([]);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
   const navigate = useNavigate();
 
   const handleMainLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setMainLogoFile(file); 
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setMainLogo(reader.result); 
-      };
-      reader.readAsDataURL(file);
+      setMainLogoFile(file);
     }
   };
 
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    setImagesFiles(files); 
-
-    const promises = files.map(file => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve(reader.result); 
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(promises)
-      .then(base64Images => {
-        setImages(base64Images); 
-      })
-      .catch(err => {
-        console.error("Error converting images to Base64:", err);
-      });
+    setImagesFiles(files);
   };
 
   const handleSubmit = async (event) => {
@@ -60,32 +33,38 @@ function AddEvent() {
     imagesFiles.forEach(file => formData.append('images', file));
 
     try {
-        const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
-            method: "POST",
-            body: formData,
-        });
+      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
+        method: "POST",
+        body: formData,
+      });
 
-        const data = await res.json(); 
+      const data = await res.json();
 
-        if (res.ok) {
-            setMessageType('success'); 
-            setMessage(data.message); 
-            navigate("/events"); 
-        } else {
-            setMessageType('error'); 
-            throw new Error(data.message || 'Failed to add event'); 
-        }
+      if (res.ok) {
+        setMessageType('success');
+        setMessage(data.message);
+        navigate("/events");
+      } else {
+        setMessageType('error');
+        throw new Error(data.message || 'Failed to add event');
+      }
     } catch (err) {
-        setMessageType('error'); 
-        setMessage(err.message); 
+      setMessageType('error');
+      setMessage(err.message);
     }
-};
+  };
 
   return (
     <div className="form-container mt-5 english">
-      <h3 className="heading error-message">Add Event</h3>
+      {/* Add Event Button */}
+      <button className="btn btn-success position-absolute top-0 end-0 mt-3 me-3" onClick={() => navigate('/addevent')}>
+        Add Event
+      </button>
+
+
+      <h3 className="heading">Add Event</h3>
       <div className={`message ${messageType}`}>
-         {message && <p>{message}</p>}
+        {message && <p>{message}</p>}
       </div>
 
       <form onSubmit={handleSubmit} className="form">
@@ -128,7 +107,6 @@ function AddEvent() {
             multiple
             required
           />
-         
         </div>
 
         <div className="text-center">
@@ -136,8 +114,6 @@ function AddEvent() {
             Add Event
           </button>
         </div>
-
-       
       </form>
     </div>
   );
