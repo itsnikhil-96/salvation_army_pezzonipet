@@ -7,6 +7,8 @@ function AddEvent() {
   const [dateOfEvent, setDateOfEvent] = useState('');
   const [mainLogoFile, setMainLogoFile] = useState(null); 
   const [imagesFiles, setImagesFiles] = useState([]); 
+  const [message, setMessage] = useState(''); 
+  const [messageType, setMessageType] = useState(''); 
   const [err, setErr] = useState(null);
 
   const navigate = useNavigate();
@@ -53,31 +55,39 @@ function AddEvent() {
 
     const formData = new FormData();
     formData.append('eventname', eventName);
-    formData.append('dateOfEvent', dateOfEvent); 
-    formData.append('mainLogo', mainLogoFile); 
-    imagesFiles.forEach(file => formData.append('images', file)); 
+    formData.append('dateOfEvent', dateOfEvent);
+    formData.append('mainLogo', mainLogoFile);
+    imagesFiles.forEach(file => formData.append('images', file));
+
     try {
-      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
-        method: "POST",
-        body: formData,
-      });
-      if (res.ok) {
-        navigate("/events");
-      } else {
-        const errorResponse = await res.json();
-        throw new Error(errorResponse.message || 'Failed to add event');
-      }
+        const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await res.json(); 
+
+        if (res.ok) {
+            setMessageType('success'); 
+            setMessage(data.message); 
+            navigate("/events"); 
+        } else {
+            setMessageType('error'); 
+            throw new Error(data.message || 'Failed to add event'); 
+        }
     } catch (err) {
-      setErr(err.message);
+        setMessageType('error'); 
+        setMessage(err.message); 
     }
-  };
+};
 
   return (
-    <div className="form-container mt-5">
+    <div className="form-container mt-5 english">
       <h3 className="heading error-message">Add Event</h3>
-       <div className='english '>
-      {err && <p>{err}</p>}
+      <div className={`message ${messageType}`}>
+         {message && <p>{message}</p>}
       </div>
+
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label>Event Name:</label>
