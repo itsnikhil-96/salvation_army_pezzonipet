@@ -75,6 +75,9 @@ function AddEvent() {
   return (
     <div className="form-container mt-5">
       <h3 className="heading">Add Event</h3>
+       <div className='english'>
+      {err && <p className="error-message">{err}</p>}
+      </div>
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label>Event Name:</label>
@@ -124,7 +127,7 @@ function AddEvent() {
           </button>
         </div>
 
-        {err && <p className="error-message">{err}</p>}
+       
       </form>
     </div>
   );
