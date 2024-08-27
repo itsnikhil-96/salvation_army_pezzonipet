@@ -20,9 +20,12 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
             mainLogo,
             images,
         };
-
+        const alreadyinserted = await eventsCollection.findOne({ eventname: eventName });
+        if(alreadyinserted)
+        {
+            res.status(401).send({ message: 'Event already Existed' });
+        }
         await eventsCollection.insertOne(newEvent);
-
         res.status(201).send({ message: 'Event created successfully', event: newEvent });
     } catch (error) {
         console.error('Error creating event:', error);
