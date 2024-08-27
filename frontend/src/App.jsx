@@ -65,10 +65,6 @@ function App() {
         {
           path:"addevent",
           element:<AddEvent/>
-        },
-        {
-          path:"photogallery",
-          element:<PhotoGallery/>
         }
       ]
     }
