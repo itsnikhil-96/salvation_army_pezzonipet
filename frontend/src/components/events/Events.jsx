@@ -64,8 +64,8 @@ function Events() {
             const addDeleteRes = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/adddeletedevent', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ eventDetails })
-              });
+                body: JSON.stringify({ username: currentUser.username, eventDetails })
+              });              
         
               if (!addDeleteRes.ok) {
                 throw new Error('Failed to update deletedevents');
