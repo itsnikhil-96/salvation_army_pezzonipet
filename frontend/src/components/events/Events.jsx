@@ -57,21 +57,20 @@ function Events() {
               eventname: selectedEvent.eventname,
               dateOfEvent: selectedEvent.dateOfEvent,
               mainLogo: selectedEvent.mainLogo,
-              additionalPics: selectedEvent.additionalPics, // Assuming additionalPics is an array of picture URLs or base64 encoded strings
-              // Include other event fields as necessary
+              images: selectedEvent.images, 
             };
       
             // Add the full event details to deletedevents before deleting
             const addDeleteRes = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/adddeletedevent', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ username: currentUser.username, eventDetails })
-            });
-      
-            if (!addDeleteRes.ok) {
-              throw new Error('Failed to update deletedevents');
-            }
-      
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: currentUser.username, eventDetails })
+              });
+        
+              if (!addDeleteRes.ok) {
+                throw new Error('Failed to update deletedevents');
+              }
+        
             // Proceed with event deletion
             const encodedEventName = encodeURIComponent(selectedEvent.eventname);
             const deleteRes = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
