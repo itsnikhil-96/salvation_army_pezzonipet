@@ -10,7 +10,10 @@
 .container.with-add-event-button .row:first-child {
   margin-top: 70px; /* Adjust to your preference */
 }
-
+.marginbtn
+{
+  margin-bottom: 50px;
+}
 
 /* Events.css */
 .modal {

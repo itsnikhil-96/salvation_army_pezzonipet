@@ -121,10 +121,10 @@ function Events() {
     return (
         <div className="container mt-3 position-relative">
             
-                <div className='mb-5'>
+                <div className='marginbtn'>
                 {userLoginStatus && (
                 <button 
-                    className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
+                    className="btn btn-success position-absolute top-0 end-0 me-3"
                     onClick={() => navigate('/addevent')}
                 >
                     Add Event
