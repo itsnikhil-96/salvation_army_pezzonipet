@@ -136,7 +136,7 @@ function Events() {
                 </div>
             </div>
 
-            <div className='row text-center marginht'>
+            <div className='row text-center marginht mt-5'>
                 {loading && <div className='loading'>Loading Events please Wait</div>}
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
