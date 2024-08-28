@@ -12,8 +12,10 @@
 }
 .marginht
 {
-  margin-top: 140px;
+  
+    margin-top: 2rem; /* Adjust the value as needed */
 }
+
 /* Events.css */
 .modal {
   position: fixed;
