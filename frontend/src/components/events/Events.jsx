@@ -51,45 +51,68 @@ function Events() {
 
     const handleConfirmDelete = async () => {
         if (username === currentUser.username) {
-            try {
-                const encodedEventName = encodeURIComponent(selectedEvent.eventname);
-                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
-                    method: 'DELETE',
-                });
-
-                if (response.ok) {
-                    setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
-                    alert('Successfully deleted Event');
-                    setSelectedEvent(null);
-                }
-                else {
-                    const result = await response.json();
-                    alert(`Failed to delete event: ${result.message}`);
-                }
-                    const deleteddetails = {
-                        eventname: selectedEvent.eventname,
-                        username
-                    };
-                    
-                    const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(deleteddetails)
-                    });
-                    if(res.ok)
-                    {
-                        alert("deleted successfully");
-                    }
-            } catch (error) {
-                console.error('Error deleting event:', error);
-                alert('Failed to delete event. Please try again later.');
+          try {
+            // Prepare the event details to be added to deletedevents including additional pictures
+            const eventDetails = {
+              eventname: selectedEvent.eventname,
+              dateOfEvent: selectedEvent.dateOfEvent,
+              mainLogo: selectedEvent.mainLogo,
+              additionalPics: selectedEvent.additionalPics, // Assuming additionalPics is an array of picture URLs or base64 encoded strings
+              // Include other event fields as necessary
+            };
+      
+            // Add the full event details to deletedevents before deleting
+            const addDeleteRes = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/adddeletedevent', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: currentUser.username, eventDetails })
+            });
+      
+            if (!addDeleteRes.ok) {
+              throw new Error('Failed to update deletedevents');
             }
+      
+            // Proceed with event deletion
+            const encodedEventName = encodeURIComponent(selectedEvent.eventname);
+            const deleteRes = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
+              method: 'DELETE',
+            });
+      
+            if (deleteRes.ok) {
+              setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
+              alert('Successfully deleted Event');
+              setSelectedEvent(null);
+            } else {
+              const result = await deleteRes.json();
+              alert(`Failed to delete event: ${result.message}`);
+            }
+      
+            // Optionally send additional delete details
+            const deleteddetails = {
+              eventname: selectedEvent.eventname,
+              username
+            };
+      
+            const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(deleteddetails)
+            });
+      
+            if (res.ok) {
+              alert("Deleted successfully");
+            }
+          } catch (error) {
+            console.error('Error deleting event:', error);
+            alert('Failed to delete event. Please try again later.');
+          }
         } else {
-            alert('Username does not match!');
+          alert('Username does not match!');
         }
-    };
+      };
+      
 
     const closeModal = () => {
         setSelectedEvent(null);

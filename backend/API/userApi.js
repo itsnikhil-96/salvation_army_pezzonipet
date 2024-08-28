@@ -93,4 +93,29 @@ usersApp.post("/user", expressAsyncHandler(async(req, res) => {
     // send response
     res.send({ message: "Login success", token: signedToken, user: dbUser,payload:dbUser});
   }));
+
+  // Add this route to your user API
+usersApp.post("/user-api/adddeletedevent", expressAsyncHandler(async (req, res) => {
+  const { username, eventDetails } = req.body;
+
+  // Get usersCollection obj
+  const usersCollection = req.app.get("users");
+
+  try {
+    // Update the user's deletedevents array with the complete event details including additional pictures
+    const result = await usersCollection.updateOne(
+      { username },
+      { $push: { deletedevents: eventDetails } }
+    );
+
+    if (result.modifiedCount > 0) {
+      res.status(200).send({ message: "Event added to deletedevents" });
+    } else {
+      res.status(400).send({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Server error" });
+  }
+}));
+
 module.exports = usersApp;
