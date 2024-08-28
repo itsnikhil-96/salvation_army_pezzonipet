@@ -18,8 +18,6 @@ function Register() {
 
   async function onUserRegister(newUser) {
     const { password, confirmPassword } = getValues();
-
-    try {
       const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,10 +37,6 @@ function Register() {
         const result = await res.json();
         setErr(result.message || "Registration failed");
       }
-    } catch (err) {
-      console.error("Error:", err);
-      setErr("An error occurred during registration");
-    }
   }
 
   return (
