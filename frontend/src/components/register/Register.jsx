@@ -18,7 +18,7 @@ function Register() {
   } = useForm();
 
   async function onUserRegister(newUser) {
-    const { password, confirmPassword } = data;
+    const { password, confirmPassword } = newUser;
 
     // Check if passwords match
     if (password !== confirmPassword) {
