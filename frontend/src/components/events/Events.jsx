@@ -120,11 +120,8 @@ function Events() {
 
     return (
         <div className="container mt-3 position-relative">
-            <div className='row'>
-                <div className='col-8 heading fs-3'>
-                   
-                </div>
-                <div className='col-4'>
+            
+                <div className='mb-5'>
                 {userLoginStatus && (
                 <button 
                     className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
@@ -134,7 +131,7 @@ function Events() {
                 </button>
             )}
                 </div>
-            </div>
+
 
             <div className='row text-center marginht mt-5'>
                 {loading && <div className='loading'>Loading Events please Wait</div>}
