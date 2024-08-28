@@ -49,6 +49,7 @@ function Register() {
     <div className='login-container mt-5'>
       <h2 className='text-center'>Registration Page</h2>
       <form className='form' onSubmit={handleSubmit(onUserRegister)}>
+      {err && <p className="text-danger english lead">{err}</p>}
         <div className='form-element'>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">Username</label>
@@ -92,37 +93,6 @@ function Register() {
             <p className="text-danger lead">*Confirm password is required</p>
           )}
         </div>
-
-        <div className='form-element'>
-          <label htmlFor='mobile'>Mobile Number</label>
-          <input
-            type="tel"
-            id="mobile"
-            className="form-control"
-            {...register("mobile", { required: true })}
-            placeholder="Enter your mobile number"
-          />
-          {errors.mobile && (
-            <p className="text-danger lead">*Mobile number is required</p>
-          )}
-        </div>
-
-        <div className='form-element'>
-          <label htmlFor="email" className="form-label">Email</label>
-          <input
-            type="email"
-            id="email"
-            className="form-control"
-            placeholder="Enter your email"
-            {...register("email", { required: true })}
-          />
-          {errors.email && (
-            <p className="text-danger lead">*Email is required</p>
-          )}
-        </div>
-
-        {err && <p className="text-danger lead">{err}</p>}
-
         <div className='text-center'>
           <button className='btn btn-success m-3'>Register</button>
         </div>
