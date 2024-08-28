@@ -43,10 +43,6 @@ function Register() {
       console.log("Error:", err);
       setErr(err.message);
     }
-  }catch (err) {
-      console.error("Error:", err);
-      setErr("An error occurred during registration");
-    }
   }
 
   return (
