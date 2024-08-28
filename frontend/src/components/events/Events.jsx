@@ -120,16 +120,22 @@ function Events() {
 
     return (
         <div className="container mt-3 position-relative">
-            {userLoginStatus && (
-                <button 
-                    className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
-                    onClick={() => navigate('/addevent')}
-                >
-                    Add Event
-                </button>
-            )}
-
             <div className='row text-center'>
+                <div className='row'>
+                    <div className='col-9'>
+
+                    </div>
+                    <div className='col-3'>
+                        {userLoginStatus && (
+                        <button 
+                            className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
+                            onClick={() => navigate('/addevent')}
+                         >
+                            Add Event
+                        </button>
+                    )}
+                    </div>
+                </div>
                 {loading && <div className='loading'>Loading Events please Wait</div>}
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
@@ -160,7 +166,7 @@ function Events() {
                                                 className='w-100 h-100 btn btn-danger text-center' 
                                                 style={{ marginLeft: '4px' }} 
                                                 onClick={() => handleDelete(event)}>
-                                                <RiDeleteBin6Line className='fs-3' />
+                                                <RiDeleteBin6Line />
                                             </button>
                                         </div>
                                     )}
