@@ -5,8 +5,9 @@ import { userLoginContext } from "../../components/contexts/userLoginContext";
 import '../login/Login.css';
 
 function Register() {
-  const { setCurrentUser, setUserLoginStatus } = useContext(userLoginContext);
   const [err, setErr] = useState("");
+  let { loginUser} = useContext(userLoginContext);
+
   const navigate = useNavigate();
   
   const {
@@ -16,7 +17,7 @@ function Register() {
     getValues
   } = useForm();
 
-  async function onUserRegister(data) {
+  async function onUserRegister(newUser) {
     const { password, confirmPassword } = data;
 
     // Check if passwords match
@@ -32,8 +33,7 @@ function Register() {
       });
 
       if (res.ok) {
-        const user = await res.json();
-        loginUser(user); 
+        loginUser(newUser); 
         navigate("/home");
       } else {
         const result = await res.json();
