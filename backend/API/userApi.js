@@ -95,8 +95,8 @@ usersApp.post("/user", expressAsyncHandler(async(req, res) => {
   }));
 
   // Add this route to your user API
-usersApp.post("/user-api/adddeletedevent", expressAsyncHandler(async (req, res) => {
-  const { username, eventDetails } = req.body;
+usersApp.post("/adddeletedevent", expressAsyncHandler(async (req, res) => {
+  const{ eventDetails } = req.body;
 
   // Get usersCollection obj
   const usersCollection = req.app.get("users");
