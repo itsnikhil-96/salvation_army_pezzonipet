@@ -20,12 +20,12 @@ function Events() {
                 if (response.ok) {
                     const data = await response.json();
                     setEvents(data.payload);
-                    setLoading(false);
                 } else {
                     throw new Error('Failed to fetch events');
                 }
             } catch (error) {
                 setError(error.message);
+            } finally {
                 setLoading(false);
             }
         };
@@ -34,14 +34,10 @@ function Events() {
     }, []);
 
     useEffect(() => {
-        if (selectedEvent) {
-            document.body.style.overflow = 'hidden'; // Disable scroll
-        } else {
-            document.body.style.overflow = 'auto'; // Enable scroll
-        }
+        document.body.style.overflow = selectedEvent ? 'hidden' : 'auto';
         
         return () => {
-            document.body.style.overflow = 'auto'; // Cleanup
+            document.body.style.overflow = 'auto';
         };
     }, [selectedEvent]);
 
@@ -60,21 +56,42 @@ function Events() {
                 const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
                     method: 'DELETE',
                 });
-    
+
                 if (response.ok) {
                     setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
-                    alert(`Successfully deleted Event`);
+                    alert('Successfully deleted Event');
                     setSelectedEvent(null);
+
+                    // Post deletion details
+                    const deleteddetails = {
+                        eventname: selectedEvent.eventname,
+                        username
+                    };
+                    const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(deleteddetails)
+                    });
+                    console.log("entered into deleted api");
+                    if (res.ok) {
+                        alert('Added details of deleted event');
+                        console.log("deleted");
+                    } else {
+                        alert('Failed to log deleted event details');
+                        console.log("not");
+                    }
                 } else {
                     const result = await response.json();
                     alert(`Failed to delete event: ${result.message}`);
                 }
             } catch (error) {
-                console.error("Error deleting event:", error);
-                alert("Failed to delete event. Please try again later.");
+                console.error('Error deleting event:', error);
+                alert('Failed to delete event. Please try again later.');
             }
         } else {
-            alert("Username does not match!");
+            alert('Username does not match!');
         }
     };
 
@@ -91,10 +108,9 @@ function Events() {
 
     return (
         <div className="container mt-3 position-relative">
-            {/* Conditionally render Add Event button */}
             {userLoginStatus && (
                 <button 
-                    className="btn btn-success position-absolute top-0 end-0 mt-3 me-3"
+                    className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
                     onClick={() => navigate('/addevent')}
                 >
                     Add Event
@@ -132,8 +148,7 @@ function Events() {
                                                 className='w-100 h-100 btn btn-danger text-center' 
                                                 style={{ marginLeft: '4px' }} 
                                                 onClick={() => handleDelete(event)}>
-                                               <RiDeleteBin6Line className='fs-3' />
-
+                                                <RiDeleteBin6Line className='fs-3' />
                                             </button>
                                         </div>
                                     )}
@@ -144,7 +159,6 @@ function Events() {
                 ))}
             </div>
 
-            {/* Modal */}
             {selectedEvent && (
                 <div className="modal show" style={{ display: 'block' }} tabIndex="-1" role="dialog" onClick={handleOutsideClick}>
                     <div className="modal-dialog" role="document">

@@ -4,22 +4,27 @@ const { ObjectId } = require('mongodb');
 const deletedApp = express.Router();
 
 
-deletedApp.post("/events/:eventname", (async (req, res) => {
+deletedApp.post("/delete", async (req, res) => {
     try {
-        const eventName = req.params.eventname;
-        const eventsCollection = req.app.get('events');
+        const { eventname, username } = req.body;
 
-        const deletionResult = await eventsCollection.findOne({ eventname: eventName });
-
-        if (deletionResult.deletedCount === 0) {
-            return res.status(404).send({ message: "Event not found" });
+        if (!eventname || !username) {
+            return res.status(400).send({ message: "Event name and username are required" });
         }
+        const deletedEventsCollection = req.app.get('deletedEvents'); 
 
-        res.status(200).send({ message: "Event deleted successfully" });
+        const deletionDetails = {
+            eventname,
+            username
+        };
+
+        await deletedEventsCollection.insertOne(deletionDetails);
+
+        res.status(200).send({ message: "Details are entered successfully" });
     } catch (error) {
-        console.error("Error deleting event:", error);
-        res.status(500).send({ message: "Failed to delete event", error: error.message });
+        console.error("Something went wrong:", error);
+        res.status(500).send({ message: "Failed to update deleted event", error: error.message });
     }
-}));
+});
 
 module.exports = deletedApp;
