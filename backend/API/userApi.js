@@ -94,7 +94,6 @@ usersApp.post("/user", expressAsyncHandler(async(req, res) => {
     res.send({ message: "Login success", token: signedToken, user: dbUser,payload:dbUser});
   }));
 
-  // Add this route to your user API
 usersApp.post("/adddeletedevent", expressAsyncHandler(async (req, res) => {
   const{ username,eventDetails } = req.body;
   const usersCollection = req.app.get("users");
