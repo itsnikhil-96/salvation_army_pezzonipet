@@ -78,12 +78,9 @@ function Events() {
                         },
                         body: JSON.stringify(deleteddetails)
                     });
-                    
-                    if (res.ok) {
-                        alert('Added details of deleted event');
-                        console.log("Details logged successfully");
-                    } else {
-                        alert('Failed to log deleted event details');
+                    if(res.ok)
+                    {
+                        alert("deleted successfully");
                     }
             } catch (error) {
                 console.error('Error deleting event:', error);
