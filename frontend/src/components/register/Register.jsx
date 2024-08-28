@@ -1,66 +1,72 @@
-import React from 'react';
-import '../login/Login.css';
-import { useContext } from "react";
+import React, { useState, useContext } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { userLoginContext } from "../../components/contexts/userLoginContext";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import '../login/Login.css';
 
 function Register() {
-  let { loginUser, userLoginStatus} = useContext(userLoginContext);
-
-  let {
+  const { setCurrentUser, setUserLoginStatus } = useContext(userLoginContext);
+  const [err, setErr] = useState("");
+  const navigate = useNavigate();
+  
+  const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues
   } = useForm();
-
-  //error state
-  let [err, setErr] = useState("");
-  //navigate to routes
-  let navigate = useNavigate();
 
   async function onUserRegister(newUser) {
     try {
-      let res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
+      const { password, confirmPassword } = getValues();
+      
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        setErr("Passwords do not match");
+        return;
+      }
+
+      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),
       });
-       console.log(res);
-      if (res.status === 200) {
-        userLoginStatus=true;
-        
-        console.log(userLoginStatus);
-        navigate("/home");
 
+      if (res.ok) {
+        // Update login context
+        setUserLoginStatus(true);
+        setCurrentUser(newUser);
+        navigate("/home");
+      } else {
+        const result = await res.json();
+        setErr(result.message || "Registration failed");
       }
     } catch (err) {
-      console.log("err is ", err);
-      setErr(err.message);
+      setErr("An error occurred during registration");
+      console.error("Error:", err);
     }
   }
+
   return (
     <div className='login-container mt-5'>
       <h2 className='text-center'>Registration Page</h2>
       <form className='form' onSubmit={handleSubmit(onUserRegister)}>
         <div className='form-element'>
-        <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                className="form-control"
-                 placeholder="Enter your username"
-                {...register("username", { required: true })}
-              />
-               {errors.username?.type === "required" && (
-                <p className="text-danger lead">*Username is required</p>
-              )}
+          <div className="mb-3">
+            <label htmlFor="username" className="form-label">Username</label>
+            <input
+              type="text"
+              id="username"
+              className="form-control"
+              placeholder="Enter your username"
+              {...register("username", { required: true })}
+            />
+            {errors.username?.type === "required" && (
+              <p className="text-danger lead">*Username is required</p>
+            )}
+          </div>
         </div>
-        </div>
+
         <div className='form-element'>
           <label htmlFor='password'>Password</label>
           <input
@@ -68,25 +74,27 @@ function Register() {
             id="password"
             className="form-control"
             placeholder="Enter your password"
-            required
+            {...register("password", { required: true })}
           />
+          {errors.password?.type === "required" && (
+            <p className="text-danger lead">*Password is required</p>
+          )}
         </div>
+
         <div className='form-element'>
-        <label htmlFor="password" className="form-label">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                className="form-control"
-                 placeholder="Confirm your password"
-                {...register("password", { required: true })}
-              />
-             
-              {errors.password?.type === "required" && (
-                <p className="text-danger lead">*Password is required</p>
-              )}
+          <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            className="form-control"
+            placeholder="Confirm your password"
+            {...register("confirmPassword", { required: true })}
+          />
+          {errors.confirmPassword?.type === "required" && (
+            <p className="text-danger lead">*Confirm password is required</p>
+          )}
         </div>
+
         <div className='form-element'>
           <label htmlFor='mobile'>Mobile Number</label>
           <input
@@ -96,29 +104,33 @@ function Register() {
             {...register("mobile", { required: true })}
             placeholder="Enter your mobile number"
           />
+          {errors.mobile?.type === "required" && (
+            <p className="text-danger lead">*Mobile number is required</p>
+          )}
         </div>
+
         <div className='form-element'>
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                className="form-control"
-                 placeholder="Enter your email"
-                {...register("email", { required: true })}
-              />
-              {/* validation error message on email */}
-              {errors.email?.type === "required" && (
-                <p className="text-danger lead">*Email is required</p>
-              )}
+          <label htmlFor="email" className="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            className="form-control"
+            placeholder="Enter your email"
+            {...register("email", { required: true })}
+          />
+          {errors.email?.type === "required" && (
+            <p className="text-danger lead">*Email is required</p>
+          )}
         </div>
+
+        {err && <p className="text-danger lead">{err}</p>}
+
         <div className='text-center'>
           <button className='btn btn-success m-3'>Register</button>
         </div>
       </form>
     </div>
-  )
+  );
 }
 
 export default Register;
