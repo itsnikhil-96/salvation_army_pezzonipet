@@ -61,12 +61,16 @@ function Events() {
                     setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
                     alert('Successfully deleted Event');
                     setSelectedEvent(null);
-
-                    // Post deletion details
+                }
+                else {
+                    const result = await response.json();
+                    alert(`Failed to delete event: ${result.message}`);
+                }
                     const deleteddetails = {
                         eventname: selectedEvent.eventname,
                         username
                     };
+                    
                     const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
                         method: 'POST',
                         headers: {
@@ -74,18 +78,13 @@ function Events() {
                         },
                         body: JSON.stringify(deleteddetails)
                     });
-                    console.log("entered into deleted api");
+                    
                     if (res.ok) {
                         alert('Added details of deleted event');
-                        console.log("deleted");
+                        console.log("Details logged successfully");
                     } else {
                         alert('Failed to log deleted event details');
-                        console.log("not");
                     }
-                } else {
-                    const result = await response.json();
-                    alert(`Failed to delete event: ${result.message}`);
-                }
             } catch (error) {
                 console.error('Error deleting event:', error);
                 alert('Failed to delete event. Please try again later.');

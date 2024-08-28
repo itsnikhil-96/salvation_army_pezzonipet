@@ -7,23 +7,23 @@ const deletedApp = express.Router();
 deletedApp.post("/delete", async (req, res) => {
     try {
         const { eventname, username } = req.body;
-
         if (!eventname || !username) {
             return res.status(400).send({ message: "Event name and username are required" });
         }
-        const deletedEventsCollection = req.app.get('deletedEvents'); 
-
-        const deletionDetails = {
+        const deletedEventsCollection = req.app.get('deletedevents'); 
+        const result = await deletedEventsCollection.insertOne({
             eventname,
             username
-        };
+         });
 
-        await deletedEventsCollection.insertOne(deletionDetails);
-
-        res.status(200).send({ message: "Details are entered successfully" });
+        if (result.insertedCount === 1) {
+            res.status(200).send({ message: "Details logged successfully" });
+        } else {
+            res.status(500).send({ message: "Failed to log deletion details" });
+        }
     } catch (error) {
-        console.error("Something went wrong:", error);
-        res.status(500).send({ message: "Failed to update deleted event", error: error.message });
+        console.error("Error logging deletion details:", error);
+        res.status(500).send({ message: "Failed to log deletion details", error: error.message });
     }
 });
 
