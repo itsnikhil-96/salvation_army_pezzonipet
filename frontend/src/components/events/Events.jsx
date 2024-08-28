@@ -121,7 +121,7 @@ function Events() {
     return (
         <div className="container mt-3 position-relative">
             <div className='row'>
-                <div className='col-8'>
+                <div className='col-8 heading'>
                     Events of Salvation Army -Pezzonipet Corps
                 </div>
                 <div className='col-4'>
