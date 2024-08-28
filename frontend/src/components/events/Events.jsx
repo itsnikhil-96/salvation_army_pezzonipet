@@ -120,22 +120,23 @@ function Events() {
 
     return (
         <div className="container mt-3 position-relative">
-            <div className='row text-center'>
-                <div className='row'>
-                    <div className='col-9'>
-
-                    </div>
-                    <div className='col-3'>
-                        {userLoginStatus && (
-                        <button 
-                            className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
-                            onClick={() => navigate('/addevent')}
-                         >
-                            Add Event
-                        </button>
-                    )}
-                    </div>
+            <div className='row'>
+                <div className='col-8'>
+                    Events of Salvation Army -Pezzonipet Corps
                 </div>
+                <div className='col-4'>
+                {userLoginStatus && (
+                <button 
+                    className="btn btn-success position-absolute top-0 end-0 m-3 me-3"
+                    onClick={() => navigate('/addevent')}
+                >
+                    Add Event
+                </button>
+            )}
+                </div>
+            </div>
+
+            <div className='row text-center'>
                 {loading && <div className='loading'>Loading Events please Wait</div>}
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
