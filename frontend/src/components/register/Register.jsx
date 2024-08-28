@@ -16,27 +16,37 @@ function Register() {
     getValues
   } = useForm();
 
-  async function onUserRegister(newUser) {
-    const { password, confirmPassword } = getValues();
+  async function onUserRegister(data) {
+    const { password, confirmPassword } = data;
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setErr("Passwords do not match");
+      return;
+    }
+    try {
       const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),
       });
 
-      console.log('Response Status:', res.status);
-      console.log('Response Body:', await res.json());
-
       if (res.ok) {
-        // Assuming you want to update the current user context with newUser data
-        setUserLoginStatus(true);
-        setCurrentUser(newUser);
+        const user = await res.json();
+        loginUser(user); 
         navigate("/home");
       } else {
-        // Get and display error message from response
         const result = await res.json();
         setErr(result.message || "Registration failed");
       }
+    } catch (err) {
+      console.log("Error:", err);
+      setErr(err.message);
+    }
+  }catch (err) {
+      console.error("Error:", err);
+      setErr("An error occurred during registration");
+    }
   }
 
   return (
@@ -53,7 +63,7 @@ function Register() {
               placeholder="Enter your username"
               {...register("username", { required: true })}
             />
-            {errors.username?.type === "required" && (
+            {errors.username && (
               <p className="text-danger lead">*Username is required</p>
             )}
           </div>
@@ -68,7 +78,7 @@ function Register() {
             placeholder="Enter your password"
             {...register("password", { required: true })}
           />
-          {errors.password?.type === "required" && (
+          {errors.password && (
             <p className="text-danger lead">*Password is required</p>
           )}
         </div>
@@ -82,7 +92,7 @@ function Register() {
             placeholder="Confirm your password"
             {...register("confirmPassword", { required: true })}
           />
-          {errors.confirmPassword?.type === "required" && (
+          {errors.confirmPassword && (
             <p className="text-danger lead">*Confirm password is required</p>
           )}
         </div>
@@ -96,7 +106,7 @@ function Register() {
             {...register("mobile", { required: true })}
             placeholder="Enter your mobile number"
           />
-          {errors.mobile?.type === "required" && (
+          {errors.mobile && (
             <p className="text-danger lead">*Mobile number is required</p>
           )}
         </div>
@@ -110,7 +120,7 @@ function Register() {
             placeholder="Enter your email"
             {...register("email", { required: true })}
           />
-          {errors.email?.type === "required" && (
+          {errors.email && (
             <p className="text-danger lead">*Email is required</p>
           )}
         </div>
