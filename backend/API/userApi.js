@@ -55,6 +55,8 @@ usersApp.post("/user", expressAsyncHandler(async(req, res) => {
        let hashedpassword= await bcryptjs.hash(newUser.password,7)
        //replace plain password with hashed password in newUser
        newUser.password=hashedpassword;
+
+       newUser.deletedevents = [];
        //save user
        await usersCollection.insertOne(newUser)
        //send res
