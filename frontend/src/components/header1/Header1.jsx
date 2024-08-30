@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 import { TfiMenu } from 'react-icons/tfi';
 import { userLoginContext } from '../../components/contexts/userLoginContext';
 import { useContext } from 'react';
@@ -27,7 +27,6 @@ function Header1() {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
-    setCollapseOpen(false);
   };
 
   const handleLinkClick = () => {
@@ -46,6 +45,7 @@ function Header1() {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
+
   return (
     <div className='header1 pt-2'>
       <div className='row mainsay d-flex flex-wrap'>
@@ -56,8 +56,8 @@ function Header1() {
           <div className='col-lg-12 col-md-9 col-sm-10 col-10 titlename text-center'>
             <p className='logoname'>The Salvation Army Pezzonipet Corps</p>
           </div>
-          <div className='col-lg-12 col-md-3 col-sm-2 col-2 '>
-            <div className=' text-center button-toggle '>
+          <div className='col-lg-12 col-md-3 col-sm-2 col-2'>
+            <div className='text-center button-toggle'>
               <nav className='navbar navbar-expand-lg'>
                 <div className='container-fluid' ref={navbarRef}>
                   <button
@@ -90,11 +90,6 @@ function Header1() {
                         </Link>
                       </li>
                       <li className='nav-item'>
-                        <Link to='/doctrines' className='nav-link links' onClick={handleLinkClick}>
-                          Songs
-                        </Link>
-                      </li>
-                      <li className='nav-item'>
                         <Link to='/events' className='nav-link links' onClick={handleLinkClick}>
                           Events
                         </Link>
@@ -106,7 +101,7 @@ function Header1() {
                       </li>
                       {userLoginStatus === false ? (
                         <li className='nav-item'>
-                          <Link to='login' className='nav-link links'>
+                          <Link to='/login' className='nav-link links' onClick={handleLinkClick}>
                             Login
                           </Link>
                         </li>
@@ -123,13 +118,8 @@ function Header1() {
                           </span>
                           <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} aria-labelledby='navbarDropdown'>
                             <li>
-                              <Link to='/editprofile' className='dropdown-item' onClick={handleLinkClick}>
-                                Edit Profile
-                              </Link>
-                            </li>
-                            <li>
-                              <Link to='/addevent' className='dropdown-item' onClick={handleLinkClick}>
-                                Add Event
+                              <Link to='/viewprofile' className='dropdown-item' onClick={handleLinkClick}>
+                                View Profile
                               </Link>
                             </li>
                             <li>

@@ -1,3 +1,4 @@
+/* Base styles */
 * {
   margin: 0;
   padding: 0;
@@ -14,8 +15,7 @@ ul.navbar-nav {
   flex-direction: row;
   width: 100%;
 }
-.titlename
-{
+.titlename {
   align-items: center;
   padding: auto;
 }
@@ -24,28 +24,23 @@ ul.navbar-nav {
   padding-left: 20px;
   width: 100%;
 }
-
 .header1 {
   background-color: #F6F5F5;
 }
-
 .mainrow {
   display: flex;
   flex-direction: row-reverse;
 }
-
 .logoa {
   width: 140%;
   height: auto;
   padding: 0;
 }
-
 .logob {
   width: 55%;
   height: auto;
   padding: 0;
 }
-
 .logoname {
   font-weight: bold;
   margin: 0; 
@@ -53,21 +48,18 @@ ul.navbar-nav {
   font-size: 1.5em;
   padding: 0;
 }
-
 .nav-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
   display: flex;
 }
-
 .nav-item {
   margin-left: 20px;
   font-weight: bold;
   font-size: large;
   padding: 0;
 }
-
 a.nav-link {
   text-decoration: none;
   color: #a53860;
@@ -76,43 +68,54 @@ a.nav-link {
   opacity: 1;
   padding: 0;
 }
-
 .links:hover {
   opacity: 0.69;
   text-decoration: none;
   border-radius: 10px;
 }
-
 .icon {
   font-size: 35px;
   padding: 0;
 }
-
 .navbar-nav {
-  
   justify-content: space-around;
   width: 100%;
 }
-
 .button-toogle {
   margin-left: auto;
   padding: 0;
 }
+
+/* Dropdown menu styles with smooth transition */
+ul.dropdown-menu {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform-origin: top;
+  transition: height 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+ul.dropdown-menu.show {
+  height: auto;
+  opacity: 1;
+  overflow: visible;
+}
+
 @media screen and (max-width: 1440px) {
   .logoa {
     width: 150%;
     padding: 0;
-}
+  }
 }
 @media (max-width: 993px) {
   .logoa {
-      width: 110%;
-      padding: 0;
+    width: 110%;
+    padding: 0;
   }
   .logob {
-      width: 0%;
-      height: 0%;
-      padding: 0;
+    width: 0%;
+    height: 0%;
+    padding: 0;
   }
   a.nav-link {
     font-size: 1rem;
@@ -122,57 +125,49 @@ a.nav-link {
 
 @media screen and (max-width: 768px) {
   .logoa {
-      width: 140%;
+    width: 140%;
   }
- 
-  .mainsay
-  {
+  .mainsay {
     margin-bottom: 5px;
   }
-  .removedpic
-  {
+  .removedpic {
     width: auto;
   }
-  .titlename
-  {
+  .titlename {
     margin-top: 5px;
   }
 }
+
 @media screen and (max-width: 623px) {
   .logoa {
     width: 160%;
     padding: 0;
+  }
 }
-}
+
 @media (max-width: 489.8px) {
   .logoa {
-      width: 200%;
-      height: auto;
-      padding: 0; 
+    width: 200%;
+    height: auto;
+    padding: 0;
   }
   .icon {
     font-size: large;
     font-weight: bold;
     padding: 0;
-}
+  }
   a.nav-link {
     font-size: 0.8rem;
-   
   }
   .logoname {
-      font-size: 1rem;
-      padding: 0;
-      margin-left: 15px;
+    font-size: 1rem;
+    padding: 0;
+    margin-left: 15px;
   }
 }
+
 @media (max-width: 388.98px) {
   .logoa {
-      width: 240%;
+    width: 240%;
   }
-}
-ul.dropdown-memu.show
-{
-  
-  color: blue;
-
 }

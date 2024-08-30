@@ -18,13 +18,19 @@ function Register() {
   } = useForm();
 
   async function onUserRegister(newUser) {
-    const { password, confirmPassword } = newUser;
+    const { password, confirmPassword,secret } = newUser;
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       setErr("Passwords do not match");
       return;
     }
+
+    if(secret!=="Salvation@Army")
+    {
+      setErr("Invalid Secret Key");
+      return ;
+    }
+
     try {
       const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
         method: "POST",
@@ -51,7 +57,7 @@ function Register() {
       <form className='form' onSubmit={handleSubmit(onUserRegister)}>
       {err && <p className="text-danger english lead">{err}</p>}
         <div className='form-element'>
-          <div className="mb-3">
+         
             <label htmlFor="username" className="form-label">Username</label>
             <input
               type="text"
@@ -63,7 +69,7 @@ function Register() {
             {errors.username && (
               <p className="text-danger lead">*Username is required</p>
             )}
-          </div>
+         
         </div>
 
         <div className='form-element'>
@@ -92,6 +98,19 @@ function Register() {
           {errors.confirmPassword && (
             <p className="text-danger lead">*Confirm password is required</p>
           )}
+        </div>
+        <div className='form-element'>
+            <label htmlFor="username" className="form-label">Secret Key</label>
+            <input
+              type="text"
+              id="secret"
+              className="form-control"
+              placeholder="Enter Secret Key"
+              {...register("secret", { required: true })}
+            />
+            {errors.secret && (
+              <p className="text-danger lead">*Secret is required</p>
+            )}
         </div>
         <div className='text-center'>
           <button className='btn btn-success m-3'>Register</button>

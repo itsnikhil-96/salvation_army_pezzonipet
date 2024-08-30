@@ -13,6 +13,7 @@ function Events() {
     const [username, setUsername] = useState("");
     const navigate = useNavigate();
 
+    // Fetch events from the server
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -33,9 +34,9 @@ function Events() {
         fetchEvents();
     }, []);
 
+    // Handle body overflow when modal is open
     useEffect(() => {
         document.body.style.overflow = selectedEvent ? 'hidden' : 'auto';
-        
         return () => {
             document.body.style.overflow = 'auto';
         };
@@ -51,61 +52,69 @@ function Events() {
 
     const handleConfirmDelete = async () => {
         if (username === currentUser.username) {
-          try {
+            try {
+                // Delete event from the event collection
+                const encodedEventName = encodeURIComponent(selectedEvent.eventname);
+                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
+                    method: 'DELETE',
+                });
 
-            const eventDetails = {
-              eventname: selectedEvent.eventname,
-              dateOfEvent: selectedEvent.dateOfEvent,
-              mainLogo: selectedEvent.mainLogo,
-              images: selectedEvent.images, 
-            };
-      
-            const res1 = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/adddeletedevent', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: currentUser.username, eventDetails })
-              });              
-        
-              if (!res1.ok) {
-                throw new Error('Failed to update deletedevents');
-              }
-        
-            // Proceed with event deletion
-            const encodedEventName = encodeURIComponent(selectedEvent.eventname);
-            const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
-              method: 'DELETE',
-            });
-      
-            if (res2.ok) {
-              setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
-              alert('Successfully deleted Event');
-              setSelectedEvent(null);
-            } else {
-              const result = await deleteRes.json();
-              alert(`Failed to delete event: ${result.message}`);
+                if (res2.ok) {
+                    setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
+                    alert('Successfully deleted Event');
+                    setSelectedEvent(null);
+                } else {
+                    const result = await res2.json();
+                    alert(`Failed to delete event: ${result.message}`);
+                }
+
+                // After deleting from the main collection, save the deleted event to the deleted collection
+                const deleteddetails = {
+                    eventname: selectedEvent.eventname,
+                    dateOfEvent: selectedEvent.dateOfEvent,
+                    mainLogo: selectedEvent.mainLogo,
+                    images: selectedEvent.images,
+                    username
+                };
+
+                // Create a FormData object
+                const formData = new FormData();
+                formData.append('eventname', deleteddetails.eventname);
+                formData.append('dateOfEvent', deleteddetails.dateOfEvent);
+                formData.append('username', deleteddetails.username);
+
+                // Append files if they exist
+                if (deleteddetails.mainLogo) {
+                    const mainLogoBlob = await fetch(deleteddetails.mainLogo).then(res => res.blob());
+                    formData.append('mainLogo', mainLogoBlob);
+                }
+                if (deleteddetails.images && deleteddetails.images.length > 0) {
+                    for (const imageUrl of deleteddetails.images) {
+                        const imageBlob = await fetch(imageUrl).then(res => res.blob());
+                        formData.append('images', imageBlob);
+                    }
+                }
+
+                const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const result = await res.json();
+                    console.log('Event saved to deleted collection successfully:', result);
+                } else {
+                    console.error('Failed to save deleted event:', res.statusText);
+                    alert('Failed to save deleted event. Please try again later.');
+                }
+            } catch (error) {
+                console.error('Error deleting event:', error);
+                alert('Failed to delete event. Please try again later.');
             }
-      
-            const deleteddetails = {
-              eventname: selectedEvent.eventname,
-              username
-            };
-      
-            const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(deleteddetails)
-            });
-          } catch (error) {
-            console.error('Error deleting event:', error);
-            alert('Failed to delete event. Please try again later.');
-          }
         } else {
-          alert('Username does not match!');
+            alert('Username does not match!');
         }
-      };
-      
+    };
 
     const closeModal = () => {
         setSelectedEvent(null);
@@ -120,25 +129,23 @@ function Events() {
 
     return (
         <div className="container mt-3 position-relative">
-            
-                <div className='marginbtn'>
+            <div className='marginbtn'>
                 {userLoginStatus && (
-                <button 
-                    className="btn btn-success position-absolute top-0 end-0 me-3"
-                    onClick={() => navigate('/addevent')}
-                >
-                    Add Event
-                </button>
-            )}
-                </div>
-
+                    <button 
+                        className="btn btn-outline-secondary position-absolute top-0 end-0 me-3"
+                        onClick={() => navigate('/addevent')}
+                    >
+                        Add Event
+                    </button>
+                )}
+            </div>
 
             <div className='row text-center marginht mt-5'>
                 {loading && <div className='loading'>Loading Events please Wait</div>}
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
                     <div key={index} className='col-lg-3 col-md-4 col-sm-6 col-12 mb-4'>
-                        <div className='card h-100 bg-light shadow-sm'>
+                        <div className='card h-100 bg-light shadow-sm text-center'>
                             <div className="card-body d-flex flex-column justify-content-between">
                                 <img 
                                     src={`data:image/jpeg;base64,${event.mainLogo}`} 
@@ -186,7 +193,7 @@ function Events() {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <p>Do you really want to delete the event <strong>{selectedEvent.eventname}</strong>?</p>
+                                <p>Do you really want to delete the event <strong>{selectedEvent.eventname}</strong>.We will have info of the deleted event for Restore Purpose</p>
                                 <div className="form-group">
                                     <label htmlFor="username">Enter your username to confirm:</label>
                                     <input

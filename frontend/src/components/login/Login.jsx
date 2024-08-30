@@ -22,7 +22,7 @@ function Login() {
 
   useEffect(() => {
     if (userLoginStatus === true) {
-      navigate("/addevent");
+      navigate("/events");
     }
   }, [userLoginStatus]);
 

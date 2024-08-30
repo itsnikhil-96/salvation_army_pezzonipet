@@ -20,7 +20,7 @@ async function loginUser(userCred) {
       },
       body: JSON.stringify(userCred),
     });
-
+    
     if (!res.ok) {
       throw new Error('Invalid Username or Password');
     }

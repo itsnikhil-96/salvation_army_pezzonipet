@@ -128,7 +128,7 @@ function AddEvent() {
             multiple
             required
           />
-         
+
         </div>
 
         <div className="text-center">

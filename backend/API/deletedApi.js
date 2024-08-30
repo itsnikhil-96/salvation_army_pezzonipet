@@ -1,26 +1,39 @@
 const express = require('express');
 const multer = require('multer');
 const deletedApp = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-
-deletedApp.post("/delete", async (req, res) => {
+// Define the delete route
+deletedApp.post("/delete", upload.fields([{ name: 'mainLogo', maxCount: 1 }, { name: 'images' }]), async (req, res) => {
     try {
-        const { eventname, username } = req.body;
-        if (!eventname || !username) {
-            return res.status(400).send({ message: "Event name and username are required" });
-        }
-        const deletedEventsCollection = req.app.get('deletedevents'); 
-        console.log(deletedEventsCollection);
-        const result = await deletedEventsCollection.insertOne({
-            eventname,
-            username
-         });
+        const deletedCollection = req.app.get('deletedevents'); // Access the deleted collection from the app context
+        const { eventname, dateOfEvent } = req.body;
 
-        if (result.insertedCount!=0) {
-            res.status(200).send({ message: "Details logged successfully" });
+        // Check if files are present and extract their buffers
+        const mainLogo = req.files && req.files['mainLogo'] ? req.files['mainLogo'][0].buffer : null;
+        const images = req.files && req.files['images'] ? req.files['images'].map(file => file.buffer) : [];
+
+        // Log the uploaded files for debugging purposes
+
+        const newEvent = {
+            eventname,
+            dateOfEvent,
+            mainLogo,
+            images,
+        };
+
+        // Check if the event is already in the deleted collection
+        const alreadyDeleted = await deletedCollection.findOne({ eventname, dateOfEvent });
+        if (alreadyDeleted) {
+            return res.status(409).send({ message: "Event already present in deleted collection" });
         }
+
+        // Insert the event into the deleted collection
+        await deletedCollection.insertOne(newEvent);
+        res.status(201).send({ message: 'Event restored successfully in database', event: newEvent });
+
     } catch (error) {
-        console.error("Error logging deletion details:", error);
         res.status(500).send({ message: "Failed to log deletion", error: error.message });
     }
 });

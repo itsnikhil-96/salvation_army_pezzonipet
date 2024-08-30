@@ -56,7 +56,7 @@ usersApp.post("/user", expressAsyncHandler(async(req, res) => {
        //replace plain password with hashed password in newUser
        newUser.password=hashedpassword;
        newUser.confirmPassword=hashedpassword;
-       newUser.deletedevents = [];
+       
        //save user
        await usersCollection.insertOne(newUser)
        //send res

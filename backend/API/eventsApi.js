@@ -9,7 +9,7 @@ const upload = multer({ storage: storage });
 eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { name: 'images' }]), async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-
+        const deletedevents= req.app.get('deletedevents');
         const { eventname, dateOfEvent } = req.body;
         const mainLogo = req.files['mainLogo'] ? req.files['mainLogo'][0].buffer : null;
         const images = req.files['images'] ? req.files['images'].map(file => file.buffer) : [];
@@ -21,9 +21,14 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
             images,
         };
         const alreadyinserted = await eventsCollection.findOne({ eventname });
+        const alreadydeleted = await deletedevents.findOne({eventname});
         if(alreadyinserted)
         {
             res.status(401).send({ message: 'Event already Existed' });
+        }
+        else if(alreadydeleted)
+        {
+            res.status(401).send({ message: 'Eventname already Existed in deletedevents for restore.Try to change eventname' });
         }
         else
         {

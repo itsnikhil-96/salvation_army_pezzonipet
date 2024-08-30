@@ -1,7 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider, Routes, Route } from 'react-router-dom';
 import RootLayout from "./RootLayout";
-import Home from './components/home/Home';
 import AboutUs from './components/aboutus/AboutUs';
 import Doctrines from './components/doctrines/Doctrines';
 import Officers from './components/officers/Officers';
@@ -12,6 +11,7 @@ import EditProfile from "./components/editprofile/EditProfile";
 import AddEvent from "./components/addevent/AddEvent";
 import Events from "./components/events/Events";
 import Home1 from "./components/home1/Home1";
+import ViewProfile from "./components/viewprofile/ViewProfile";
 
 function App() {
   const browserRouter = createBrowserRouter([
@@ -65,6 +65,10 @@ function App() {
         {
           path:"addevent",
           element:<AddEvent/>
+        },
+        {
+          path:"viewprofile",
+          element:<ViewProfile/>
         }
       ]
     }
