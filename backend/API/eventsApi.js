@@ -45,7 +45,15 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
 eventsApp.get('/events', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        const eventsList = await eventsCollection.find().toArray();
+        
+        const skip = parseInt(req.query.skip) || 0; 
+        const limit = parseInt(req.query.limit) || 1; 
+
+        // Fetch the events with pagination
+        const eventsList = await eventsCollection.find()
+            .skip(skip)
+            .limit(limit)
+            .toArray();
 
         res.status(200).send({ message: 'Events retrieved successfully', payload: eventsList });
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Events.css';
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -7,20 +7,28 @@ import { userLoginContext } from '../contexts/userLoginContext';
 function Events() {
     const { userLoginStatus, currentUser } = useContext(userLoginContext);
     const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [username, setUsername] = useState("");
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const observer = useRef();
     const navigate = useNavigate();
 
-    // Fetch events from the server
+    const limit = 1;
+
     useEffect(() => {
         const fetchEvents = async () => {
+            setLoading(true);
             try {
-                const response = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events');
+                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?skip=${page * limit}&limit=${limit}`);
                 if (response.ok) {
                     const data = await response.json();
-                    setEvents(data.payload);
+                    setEvents(prevEvents => [...prevEvents, ...data.payload]);
+                    if (data.payload.length < limit) {
+                        setHasMore(false);
+                    }
                 } else {
                     throw new Error('Failed to fetch events');
                 }
@@ -32,15 +40,18 @@ function Events() {
         };
 
         fetchEvents();
-    }, []);
+    }, [page]);
 
-    // Handle body overflow when modal is open
-    useEffect(() => {
-        document.body.style.overflow = selectedEvent ? 'hidden' : 'auto';
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [selectedEvent]);
+    const lastEventElementRef = useCallback(node => {
+        if (loading) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+        if (node) observer.current.observe(node);
+    }, [loading, hasMore]);
 
     const handleViewGallery = (eventname) => {
         navigate(`/gallery/${eventname}`);
@@ -68,7 +79,6 @@ function Events() {
                     alert(`Failed to delete event: ${result.message}`);
                 }
 
-                // After deleting from the main collection, save the deleted event to the deleted collection
                 const deleteddetails = {
                     eventname: selectedEvent.eventname,
                     dateOfEvent: selectedEvent.dateOfEvent,
@@ -77,13 +87,11 @@ function Events() {
                     username
                 };
 
-                // Create a FormData object
                 const formData = new FormData();
                 formData.append('eventname', deleteddetails.eventname);
                 formData.append('dateOfEvent', deleteddetails.dateOfEvent);
                 formData.append('username', deleteddetails.username);
 
-                // Append files if they exist
                 if (deleteddetails.mainLogo) {
                     const mainLogoBlob = await fetch(deleteddetails.mainLogo).then(res => res.blob());
                     formData.append('mainLogo', mainLogoBlob);
@@ -141,10 +149,14 @@ function Events() {
             </div>
 
             <div className='row text-center marginht mt-5'>
-                {loading && <div className='loading'>Loading Events please Wait</div>}
+                
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
-                    <div key={index} className='col-lg-3 col-md-4 col-sm-6 col-12 mb-4'>
+                    <div 
+                        key={index} 
+                        className='col-lg-3 col-md-4 col-sm-6 col-12 mb-4'
+                        ref={index === events.length - 1 ? lastEventElementRef : null}
+                    >
                         <div className='card h-100 bg-light shadow-sm text-center'>
                             <div className="card-body d-flex flex-column justify-content-between">
                                 <img 
@@ -182,6 +194,7 @@ function Events() {
                 ))}
             </div>
 
+            {loading && <div className='loading mb-3'>Loading Events please Wait</div>}
             {selectedEvent && (
                 <div className="modal show" style={{ display: 'block' }} tabIndex="-1" role="dialog" onClick={handleOutsideClick}>
                     <div className="modal-dialog" role="document">
@@ -193,7 +206,7 @@ function Events() {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <p>Do you really want to delete the event <strong>{selectedEvent.eventname}</strong>.We will have info of the deleted event for Restore Purpose</p>
+                                <p>Do you really want to delete the event <strong>{selectedEvent.eventname}</strong>? We will have info of the deleted event for Restore Purpose</p>
                                 <div className="form-group">
                                     <label htmlFor="username">Enter your username to confirm:</label>
                                     <input
