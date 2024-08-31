@@ -18,32 +18,34 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
         const mainLogo = req.files['mainLogo'] ? req.files['mainLogo'][0].buffer : null;
         const images = req.files['images'] ? req.files['images'].map(file => file.buffer) : [];
 
+        // Check if the event already exists in either collection
+        const alreadyinserted = await eventsCollection.findOne({ eventname });
+        const alreadydeleted = await deletedevents.findOne({eventname});
+        
+        if(alreadyinserted) {
+            return res.status(401).send({ message: 'Event already Existed' });
+        } else if(alreadydeleted) {
+            return res.status(401).send({ message: 'Eventname already Existed in deletedevents for restore. Try to change eventname' });
+        }
+
+        // Create the new event object, but do not insert it yet
         const newEvent = {
             eventname,
             dateOfEvent,
             mainLogo,
             images,
         };
-        const alreadyinserted = await eventsCollection.findOne({ eventname });
-        const alreadydeleted = await deletedevents.findOne({eventname});
-        if(alreadyinserted)
-        {
-            res.status(401).send({ message: 'Event already Existed' });
-        }
-        else if(alreadydeleted)
-        {
-            res.status(401).send({ message: 'Eventname already Existed in deletedevents for restore.Try to change eventname' });
-        }
-        else
-        {
+
+        // Attempt to insert the new event into the database only after all images are processed
         await eventsCollection.insertOne(newEvent);
-        res.status(201).send({ message: 'Event created successfully', event: newEvent });
-        }
+        return res.status(201).send({ message: 'Event created successfully', event: newEvent });
+        
     } catch (error) {
         console.error('Error creating event:', error);
-        res.status(500).send({ message: 'Failed to create event', error: error.message });
+        return res.status(500).send({ message: 'Failed to create event', error: error.message });
     }
 });
+
 
 // Get all events
 eventsApp.get('/events', async (req, res) => {
