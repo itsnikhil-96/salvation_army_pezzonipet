@@ -35,7 +35,7 @@ function AddEvent() {
     const files = Array.from(e.target.files);
     try {
       const options = {
-        maxSizeMB: 1,
+        maxSizeMB: 2,
         maxWidthOrHeight: 800,
       };
       const compressedFiles = await Promise.all(
@@ -74,9 +74,7 @@ function AddEvent() {
       if (res.status === 201) {
         setMessageType('success'); 
         setMessage(res.data.message); 
-        setTimeout(() => {
           navigate("/events"); 
-        }, 1000); 
       } else {
         setMessageType('error'); 
         throw new Error(res.data.message || 'Failed to add event'); 
