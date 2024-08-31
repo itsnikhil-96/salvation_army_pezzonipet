@@ -45,7 +45,7 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
 eventsApp.get('/events', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        const eventsList = await eventsCollection.find().maxTimeMS(60000).toArray();
+        const eventsList = await eventsCollection.find().maxTimeMS(6000000000000000000000000000000000).toArray();
         res.status(200).send({ message: 'Events retrieved successfully', payload: eventsList });
     } catch (error) {
         console.error('Error fetching events:', error);
