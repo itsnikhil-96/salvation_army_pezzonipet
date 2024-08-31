@@ -92,16 +92,7 @@ function Events() {
                 formData.append('dateOfEvent', deleteddetails.dateOfEvent);
                 formData.append('username', deleteddetails.username);
 
-                if (deleteddetails.mainLogo) {
-                    const mainLogoBlob = await fetch(deleteddetails.mainLogo).then(res => res.blob());
-                    formData.append('mainLogo', mainLogoBlob);
-                }
-                if (deleteddetails.images && deleteddetails.images.length > 0) {
-                    for (const imageUrl of deleteddetails.images) {
-                        const imageBlob = await fetch(imageUrl).then(res => res.blob());
-                        formData.append('images', imageBlob);
-                    }
-                }
+                
 
                 const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
                     method: 'POST',

@@ -6,6 +6,21 @@
   border-radius: 8px;
   background-color: #f9f9f9;
 }
+.progress-bar {
+  width: 100%;
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.progress {
+  height: 10px;
+  background-color: #4caf50;
+  border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
 
 .form {
   display: flex;
