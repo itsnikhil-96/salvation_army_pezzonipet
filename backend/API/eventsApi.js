@@ -55,6 +55,7 @@ eventsApp.get('/events', async (req, res) => {
             .limit(limit)
             .toArray();
 
+        const eventsList = await eventsCollection.find().maxTimeMS(10000000).toArray();
         res.status(200).send({ message: 'Events retrieved successfully', payload: eventsList });
     } catch (error) {
         console.error('Error fetching events:', error);
