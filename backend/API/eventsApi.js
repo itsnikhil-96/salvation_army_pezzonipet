@@ -2,33 +2,35 @@ const express = require('express');
 const multer = require('multer');
 const eventsApp = express.Router();
 
+// Use memory storage for uploaded files
 const storage = multer.memoryStorage();
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 100 * 1024 * 1024 } // Limit file size to 10MB
-});
-
+const upload = multer({ storage: storage });
 
 // Create a new event
-eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { name: 'images' }]), async (req, res) => {
+eventsApp.post('/create', upload.fields([
+    { name: 'mainLogo', maxCount: 1 }, 
+    { name: 'images' }
+]), async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        const deletedevents= req.app.get('deletedevents');
+        const deletedevents = req.app.get('deletedevents');
         const { eventname, dateOfEvent } = req.body;
+
+        // Handling the uploaded files
         const mainLogo = req.files['mainLogo'] ? req.files['mainLogo'][0].buffer : null;
         const images = req.files['images'] ? req.files['images'].map(file => file.buffer) : [];
 
-        // Check if the event already exists in either collection
+        // Check if the event already exists in the collection or deleted events
         const alreadyinserted = await eventsCollection.findOne({ eventname });
-        const alreadydeleted = await deletedevents.findOne({eventname});
-        
-        if(alreadyinserted) {
-            return res.status(401).send({ message: 'Event already Existed' });
-        } else if(alreadydeleted) {
-            return res.status(401).send({ message: 'Eventname already Existed in deletedevents for restore. Try to change eventname' });
+        const alreadydeleted = await deletedevents.findOne({ eventname });
+
+        if (alreadyinserted) {
+            return res.status(401).send({ message: 'Event already existed' });
+        } else if (alreadydeleted) {
+            return res.status(401).send({ message: 'Eventname already existed in deletedevents for restore. Try to change eventname' });
         }
 
-        // Create the new event object, but do not insert it yet
+        // Create the new event object
         const newEvent = {
             eventname,
             dateOfEvent,
@@ -36,8 +38,9 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
             images,
         };
 
-        // Attempt to insert the new event into the database only after all images are processed
+        // Insert the new event into the database
         await eventsCollection.insertOne(newEvent);
+
         return res.status(201).send({ message: 'Event created successfully', event: newEvent });
         
     } catch (error) {
@@ -46,14 +49,12 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
     }
 });
 
-
-// Get all events
+// Get all events with pagination
 eventsApp.get('/events', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        
         const skip = parseInt(req.query.skip) || 0; 
-        const limit = parseInt(req.query.limit) || 1; 
+        const limit = parseInt(req.query.limit) || 10; // Default to 10 if no limit is specified
 
         // Fetch the events with pagination
         const eventsList = await eventsCollection.find()
@@ -86,7 +87,7 @@ eventsApp.get('/events/:eventname', async (req, res) => {
     }
 });
 
-// Add a unique ID to your event schema
+// Delete an event by eventname
 eventsApp.delete("/events", async (req, res) => {
     try {
         const eventName = decodeURIComponent(req.query.eventname);
@@ -103,9 +104,5 @@ eventsApp.delete("/events", async (req, res) => {
         res.status(500).send({ message: "Failed to delete event", error: error.message });
     }
 });
-
-
-
-
 
 module.exports = eventsApp;
