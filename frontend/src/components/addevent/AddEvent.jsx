@@ -9,6 +9,8 @@ function AddEvent() {
   const [dateOfEvent, setDateOfEvent] = useState('');
   const [mainLogoFile, setMainLogoFile] = useState(null); 
   const [imagesFiles, setImagesFiles] = useState([]); 
+  const [originalImagesSize, setOriginalImagesSize] = useState(0); 
+  const [compressedImagesSize, setCompressedImagesSize] = useState(0);
   const [message, setMessage] = useState(''); 
   const [messageType, setMessageType] = useState(''); 
   const [isUploading, setIsUploading] = useState(false);
@@ -41,6 +43,9 @@ function AddEvent() {
       return;
     }
 
+    let totalOriginalSize = 0;
+    let totalCompressedSize = 0;
+
     try {
       const options = {
         maxSizeMB: 2,  // Set maximum file size to 2 MB
@@ -48,13 +53,17 @@ function AddEvent() {
       };
       const compressedFiles = await Promise.all(
         files.map(async (file) => {
+          totalOriginalSize += file.size;
           console.log(`Original image file size: ${file.size / 1024} KB`);
           const compressedFile = await imageCompression(file, options);
+          totalCompressedSize += compressedFile.size;
           console.log(`Compressed image file size: ${compressedFile.size / 1024} KB`);
           return compressedFile;
         })
       );
       setImagesFiles(compressedFiles);
+      setOriginalImagesSize(totalOriginalSize);
+      setCompressedImagesSize(totalCompressedSize);
     } catch (error) {
       console.error("Error compressing images:", error);
     }
@@ -147,6 +156,8 @@ function AddEvent() {
             required
             disabled={isUploading}
           />
+          <p>Original Size: {(originalImagesSize / 1024).toFixed(2)} KB</p>
+          <p>Compressed Size: {(compressedImagesSize / 1024).toFixed(2)} KB</p>
         </div>
 
         <div className="text-center">
