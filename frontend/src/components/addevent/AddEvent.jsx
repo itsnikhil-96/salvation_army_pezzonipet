@@ -95,6 +95,8 @@ function AddEvent() {
       };
 
       const res = await axios.post("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", formData, config);
+      console.log(res.status);
+      console.log(res.data.message);
       if (res.status === 201) {
         setMessageType('success'); 
         setMessage(res.data.message); 
