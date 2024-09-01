@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import imageCompression from 'browser-image-compression';
 import './AddEvent.css';
 
 function AddEvent() {
@@ -15,36 +14,16 @@ function AddEvent() {
 
   const navigate = useNavigate();
 
-  const handleMainLogoChange = async (e) => {
+  const handleMainLogoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      try {
-        const options = {
-          maxSizeMB: 2,
-          maxWidthOrHeight: 800,
-        };
-        const compressedFile = await imageCompression(file, options);
-        setMainLogoFile(compressedFile);
-      } catch (error) {
-        console.error("Error compressing image:", error);
-      }
+      setMainLogoFile(file);
     }
   };
 
-  const handleImagesChange = async (e) => {
+  const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    try {
-      const options = {
-        maxSizeMB: 2,
-        maxWidthOrHeight: 800,
-      };
-      const compressedFiles = await Promise.all(
-        files.map(file => imageCompression(file, options))
-      );
-      setImagesFiles(compressedFiles);
-    } catch (error) {
-      console.error("Error compressing images:", error);
-    }
+    setImagesFiles(files);
   };
 
   const handleSubmit = async (event) => {
@@ -63,8 +42,7 @@ function AddEvent() {
           'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: (progressEvent) => {
-          // This event can be used to update progress if you still want to track it
-          // For now, we are only displaying a static message.
+          // You can update progress here if needed
         },
         timeout: 600000 
       };
@@ -74,7 +52,7 @@ function AddEvent() {
       if (res.status === 201) {
         setMessageType('success'); 
         setMessage(res.data.message); 
-          navigate("/events"); 
+        navigate("/events"); 
       } else {
         setMessageType('error'); 
         throw new Error(res.data.message || 'Failed to add event'); 
