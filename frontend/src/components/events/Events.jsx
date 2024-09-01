@@ -23,16 +23,17 @@ function Events() {
             setLoading(true);
             try {
                 const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?skip=${page * limit}&limit=${limit}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setEvents(prevEvents => [...prevEvents, ...data.payload]);
-                    if (data.payload.length < limit) {
-                        setHasMore(false);
-                    }
-                } else {
-                    throw new Error('Failed to fetch events');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Fetched data:", data); // Log the data fetched
+                setEvents(prevEvents => [...prevEvents, ...data.payload]);
+                if (data.payload.length < limit) {
+                    setHasMore(false);
                 }
             } catch (error) {
+                console.error("Fetching error:", error); // Log the error
                 setError(error.message);
             } finally {
                 setLoading(false);
@@ -79,6 +80,7 @@ function Events() {
                     alert(`Failed to delete event: ${result.message}`);
                 }
 
+                // Save deleted event details
                 const deleteddetails = {
                     eventname: selectedEvent.eventname,
                     dateOfEvent: selectedEvent.dateOfEvent,
@@ -91,8 +93,6 @@ function Events() {
                 formData.append('eventname', deleteddetails.eventname);
                 formData.append('dateOfEvent', deleteddetails.dateOfEvent);
                 formData.append('username', deleteddetails.username);
-
-                
 
                 const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
                     method: 'POST',
