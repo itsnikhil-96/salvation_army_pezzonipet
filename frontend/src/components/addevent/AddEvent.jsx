@@ -9,7 +9,6 @@ function AddEvent() {
   const [dateOfEvent, setDateOfEvent] = useState('');
   const [mainLogoFile, setMainLogoFile] = useState(null); 
   const [imagesFiles, setImagesFiles] = useState([]); 
-  const [originalImagesSize, setOriginalImagesSize] = useState(0); 
   const [compressedImagesSize, setCompressedImagesSize] = useState(0);
   const [message, setMessage] = useState(''); 
   const [messageType, setMessageType] = useState(''); 
@@ -31,6 +30,8 @@ function AddEvent() {
         setMainLogoFile(compressedFile);
       } catch (error) {
         console.error("Error compressing main logo image:", error);
+        setMessageType('error');
+        setMessage('Error compressing main logo image.');
       }
     }
   };
@@ -43,7 +44,6 @@ function AddEvent() {
       return;
     }
 
-    let totalOriginalSize = 0;
     let totalCompressedSize = 0;
 
     try {
@@ -53,7 +53,6 @@ function AddEvent() {
       };
       const compressedFiles = await Promise.all(
         files.map(async (file) => {
-          totalOriginalSize += file.size;
           console.log(`Original image file size: ${file.size / 1024} KB`);
           const compressedFile = await imageCompression(file, options);
           totalCompressedSize += compressedFile.size;
@@ -62,10 +61,11 @@ function AddEvent() {
         })
       );
       setImagesFiles(compressedFiles);
-      setOriginalImagesSize(totalOriginalSize);
       setCompressedImagesSize(totalCompressedSize);
     } catch (error) {
       console.error("Error compressing images:", error);
+      setMessageType('error');
+      setMessage('Error compressing images.');
     }
   };
 
@@ -73,10 +73,17 @@ function AddEvent() {
     event.preventDefault();
     setIsUploading(true);
 
+    if (!eventName || !dateOfEvent || !mainLogoFile || imagesFiles.length === 0) {
+      setMessageType('error');
+      setMessage('Please fill in all fields and select at least one image.');
+      setIsUploading(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('eventname', eventName);
     formData.append('dateOfEvent', dateOfEvent);
-    if (mainLogoFile) formData.append('mainLogo', mainLogoFile);
+    formData.append('mainLogo', mainLogoFile);
     imagesFiles.forEach(file => formData.append('images', file));
 
     try {
@@ -88,7 +95,6 @@ function AddEvent() {
       };
 
       const res = await axios.post("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", formData, config);
-      console.log(res.status);
       if (res.status === 201) {
         setMessageType('success'); 
         setMessage(res.data.message); 
@@ -156,8 +162,7 @@ function AddEvent() {
             required
             disabled={isUploading}
           />
-          <p>Original Size: {(originalImagesSize / 1024).toFixed(2)} KB</p>
-          <p>Compressed Size: {(compressedImagesSize / 1024).toFixed(2)} KB</p>
+          <p>Compressed Images Size: {(compressedImagesSize / 1024).toFixed(2)} KB</p>
         </div>
 
         <div className="text-center">
