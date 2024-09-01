@@ -8,8 +8,8 @@ const upload = multer({ storage: storage });
 
 // Create a new event
 eventsApp.post('/create', upload.fields([
-    { name: 'mainLogo', maxCount: 1 }, 
-    { name: 'images' }
+    { name: 'mainLogo', maxCount: 1 },
+    { name: 'images', maxCount: 100 } // Allow up to 100 images
 ]), async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
@@ -25,9 +25,9 @@ eventsApp.post('/create', upload.fields([
         const alreadydeleted = await deletedevents.findOne({ eventname });
 
         if (alreadyinserted) {
-            return res.status(401).send({ message: 'Event already existed' });
+            return res.status(401).send({ message: 'Event already exists' });
         } else if (alreadydeleted) {
-            return res.status(401).send({ message: 'Eventname already existed in deletedevents for restore. Try to change eventname' });
+            return res.status(401).send({ message: 'Event name already exists in deleted events. Try changing the event name.' });
         }
 
         // Create the new event object
@@ -53,8 +53,8 @@ eventsApp.post('/create', upload.fields([
 eventsApp.get('/events', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        const skip = parseInt(req.query.skip) || 0; 
-        const limit = parseInt(req.query.limit) || 10; // Default to 10 if no limit is specified
+        const skip = parseInt(req.query.skip) || 0;
+        const limit = parseInt(req.query.limit) || 1; // Default to 10 if no limit is specified
 
         // Fetch the events with pagination
         const eventsList = await eventsCollection.find()
@@ -88,20 +88,20 @@ eventsApp.get('/events/:eventname', async (req, res) => {
 });
 
 // Delete an event by eventname
-eventsApp.delete("/events", async (req, res) => {
+eventsApp.delete('/events', async (req, res) => {
     try {
         const eventName = decodeURIComponent(req.query.eventname);
         const eventsCollection = req.app.get('events');
         const deletionResult = await eventsCollection.deleteOne({ eventname: eventName });
 
         if (deletionResult.deletedCount === 0) {
-            return res.status(404).send({ message: "Event not found" });
+            return res.status(404).send({ message: 'Event not found' });
         }
 
-        res.status(200).send({ message: "Event deleted successfully" });
+        res.status(200).send({ message: 'Event deleted successfully' });
     } catch (error) {
-        console.error("Error deleting event:", error);
-        res.status(500).send({ message: "Failed to delete event", error: error.message });
+        console.error('Error deleting event:', error);
+        res.status(500).send({ message: 'Failed to delete event', error: error.message });
     }
 });
 
