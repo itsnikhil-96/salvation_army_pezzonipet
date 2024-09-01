@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import imageCompression from 'browser-image-compression';
 import './AddEvent.css';
 
 function AddEvent() {
@@ -11,57 +12,74 @@ function AddEvent() {
   const [message, setMessage] = useState(''); 
   const [messageType, setMessageType] = useState(''); 
   const [isUploading, setIsUploading] = useState(false);
-  const [filesLoaded, setFilesLoaded] = useState(false); 
 
   const navigate = useNavigate();
 
-  const handleMainLogoChange = (e) => {
+  const handleMainLogoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setMainLogoFile(file);
-      setFilesLoaded(true); // Mark as loaded when a file is selected
+      console.log(`Original main logo file size: ${file.size / 1024} KB`);
+      try {
+        const options = {
+          maxSizeMB: 2,  // Set maximum file size to 2 MB
+          maxWidthOrHeight: 800,
+        };
+        const compressedFile = await imageCompression(file, options);
+        console.log(`Compressed main logo file size: ${compressedFile.size / 1024} KB`);
+        setMainLogoFile(compressedFile);
+      } catch (error) {
+        console.error("Error compressing main logo image:", error);
+      }
     }
   };
 
-  const handleImagesChange = (e) => {
+  const handleImagesChange = async (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      setImagesFiles(files);
-      setFilesLoaded(true); // Mark as loaded when files are selected
+
+    if (files.length > 100) {
+      alert("You can only upload up to 100 images at a time.");
+      return;
+    }
+
+    try {
+      const options = {
+        maxSizeMB: 2,  // Set maximum file size to 2 MB
+        maxWidthOrHeight: 800,
+      };
+      const compressedFiles = await Promise.all(
+        files.map(async (file) => {
+          console.log(`Original image file size: ${file.size / 1024} KB`);
+          const compressedFile = await imageCompression(file, options);
+          console.log(`Compressed image file size: ${compressedFile.size / 1024} KB`);
+          return compressedFile;
+        })
+      );
+      setImagesFiles(compressedFiles);
+    } catch (error) {
+      console.error("Error compressing images:", error);
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Check if files are loaded
-    if (!filesLoaded) {
-      setMessageType('error');
-      setMessage('Please wait until all images are loaded.');
-      return;
-    }
-
     setIsUploading(true);
 
     const formData = new FormData();
     formData.append('eventname', eventName);
     formData.append('dateOfEvent', dateOfEvent);
-    formData.append('mainLogo', mainLogoFile);
+    if (mainLogoFile) formData.append('mainLogo', mainLogoFile);
     imagesFiles.forEach(file => formData.append('images', file));
 
     try {
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
         },
-        onUploadProgress: (progressEvent) => {
-          // You can update progress here if needed
-        },
-        timeout: 600000 
+        timeout: 600000, // Set a long timeout for the request
       };
 
       const res = await axios.post("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", formData, config);
-       console.log(res.status);
+      console.log(res.status);
       if (res.status === 201) {
         setMessageType('success'); 
         setMessage(res.data.message); 
@@ -75,7 +93,6 @@ function AddEvent() {
       setMessage(err.message); 
     } finally {
       setIsUploading(false);
-      setFilesLoaded(false); // Reset file loading state
     }
   };
 
