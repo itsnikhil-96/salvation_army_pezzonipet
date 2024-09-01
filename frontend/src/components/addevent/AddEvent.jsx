@@ -11,6 +11,7 @@ function AddEvent() {
   const [message, setMessage] = useState(''); 
   const [messageType, setMessageType] = useState(''); 
   const [isUploading, setIsUploading] = useState(false);
+  const [filesLoaded, setFilesLoaded] = useState(false); 
 
   const navigate = useNavigate();
 
@@ -18,16 +19,28 @@ function AddEvent() {
     const file = e.target.files[0];
     if (file) {
       setMainLogoFile(file);
+      setFilesLoaded(true); // Mark as loaded when a file is selected
     }
   };
 
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    setImagesFiles(files);
+    if (files.length > 0) {
+      setImagesFiles(files);
+      setFilesLoaded(true); // Mark as loaded when files are selected
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Check if files are loaded
+    if (!filesLoaded) {
+      setMessageType('error');
+      setMessage('Please wait until all images are loaded.');
+      return;
+    }
+
     setIsUploading(true);
 
     const formData = new FormData();
@@ -62,6 +75,7 @@ function AddEvent() {
       setMessage(err.message); 
     } finally {
       setIsUploading(false);
+      setFilesLoaded(false); // Reset file loading state
     }
   };
 
