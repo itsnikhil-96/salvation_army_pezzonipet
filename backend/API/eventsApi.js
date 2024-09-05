@@ -5,42 +5,92 @@ const eventsApp = express.Router();
 
 // Use memory storage for uploaded files
 const storage = multer.memoryStorage();
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 100 * 1024 * 1024 } // Limit file size to 10MB
-});
+const upload = multer({ storage: storage });
 
+// Function to get image data by ID from GridFS
+const getImageDataById = async (imageId, gridfsBucket) => {
+    try {
+        const downloadStream = gridfsBucket.openDownloadStream(new ObjectId(imageId));
+
+        return new Promise((resolve, reject) => {
+            let data = [];
+            downloadStream.on('data', chunk => data.push(chunk));
+            downloadStream.on('end', () => resolve(Buffer.concat(data)));
+            downloadStream.on('error', reject);
+        });
+    } catch (error) {
+        throw new Error('Error fetching image data: ' + error.message);
+    }
+};
 
 // Create a new event
-eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { name: 'images' }]), async (req, res) => {
+eventsApp.post('/create', upload.fields([
+    { name: 'mainLogo', maxCount: 1 },
+    { name: 'images', maxCount: 15 } // Allow up to 100 images
+]), async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        const deletedevents= req.app.get('deletedevents');
-        const { eventname, dateOfEvent } = req.body;
-        const mainLogo = req.files['mainLogo'] ? req.files['mainLogo'][0].buffer : null;
-        const images = req.files['images'] ? req.files['images'].map(file => file.buffer) : [];
+        const deletedevents = req.app.get('deletedevents');
+        const gridfsBucket = req.app.get('gridfsBucket');
 
+        const { eventname, dateOfEvent } = req.body;
+
+        // Check if the event already exists
+        const alreadyinserted = await eventsCollection.findOne({ eventname });
+        const alreadydeleted = await deletedevents.findOne({ eventname });
+
+        if (alreadyinserted) {
+            return res.status(401).send({ message: 'Event already exists' });
+        } else if (alreadydeleted) {
+            return res.status(401).send({ message: 'Event name already exists in deleted events. Try changing the event name.' });
+        }
+
+        // Create the new event object
         const newEvent = {
             eventname,
             dateOfEvent,
-            mainLogo,
-            images,
+            mainLogoId: null,
+            imagesIds: []
         };
-        const alreadyinserted = await eventsCollection.findOne({ eventname });
-        const alreadydeleted = await deletedevents.findOne({eventname});
-        if(alreadyinserted)
-        {
-            res.status(401).send({ message: 'Event already Existed' });
+
+        // Handle the uploaded main logo file
+        if (req.files['mainLogo'] && req.files['mainLogo'].length > 0) {
+            const mainLogo = req.files['mainLogo'][0];
+            const mainLogoId = await new Promise((resolve, reject) => {
+                const uploadStream = gridfsBucket.openUploadStream(mainLogo.originalname, {
+                    contentType: mainLogo.mimetype
+                });
+
+                uploadStream.on('finish', () => resolve(uploadStream.id.toString()));
+                uploadStream.on('error', reject);
+                uploadStream.end(mainLogo.buffer);
+            });
+
+            newEvent.mainLogoId = mainLogoId;
         }
-        else if(alreadydeleted)
-        {
-            res.status(401).send({ message: 'Eventname already Existed in deletedevents for restore.Try to change eventname' });
+
+        // Handle the uploaded images files
+        if (req.files['images'] && req.files['images'].length > 0) {
+            for (let file of req.files['images']) {
+                const imageId = await new Promise((resolve, reject) => {
+                    const uploadStream = gridfsBucket.openUploadStream(file.originalname, {
+                        contentType: file.mimetype
+                    });
+
+                    uploadStream.on('finish', () => resolve(uploadStream.id.toString()));
+                    uploadStream.on('error', reject);
+                    uploadStream.end(file.buffer);
+                });
+
+                newEvent.imagesIds.push(imageId);
+            }
         }
-        else
-        {
+
+        // Insert the new event into the database after all uploads are complete
         await eventsCollection.insertOne(newEvent);
-        res.status(201).send({ message: 'Event created successfully', event: newEvent });
-        }
+
+        return res.status(201).send({ message: 'Event created successfully', event: newEvent });
+
     } catch (error) {
         console.error('Error creating event:', error);
         return res.status(500).send({ message: 'Failed to create event', error: error.message });
@@ -51,9 +101,9 @@ eventsApp.post('/create', upload.fields([{ name: 'mainLogo', maxCount: 1 }, { na
 eventsApp.get('/events', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
-        
-        const skip = parseInt(req.query.skip) || 0; 
-        const limit = parseInt(req.query.limit) || 1; 
+        const gridfsBucket = req.app.get('gridfsBucket');
+        const skip = parseInt(req.query.skip) || 0;
+        const limit = parseInt(req.query.limit) || 10;
 
         // Fetch the events with pagination
         const eventsList = await eventsCollection.find()
@@ -166,8 +216,9 @@ eventsApp.post('/events/:eventname/images', upload.array('images', 15), async (r
     }
 });
 
-// Add a unique ID to your event schema
-eventsApp.delete("/events", async (req, res) => {
+
+// Delete an event by eventname
+eventsApp.delete('/events', async (req, res) => {
     try {
         const eventName = decodeURIComponent(req.query.eventname);
         const eventsCollection = req.app.get('events');

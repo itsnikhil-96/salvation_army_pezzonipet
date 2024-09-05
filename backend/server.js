@@ -6,9 +6,7 @@ const app = express();
 
 // Use CORS to allow requests from the frontend
 app.use(cors({
-  origin: 'https://salvation-army-pezzonipet-cyf5.vercel.app',  // Update this if your frontend is hosted elsewhere
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
+  origin: 'http://localhost:5173'  // Update this if your frontend is hosted elsewhere
 }));
 
 // Middleware to parse JSON
@@ -25,7 +23,16 @@ mClient.connect()
     // Set collections
     app.set('events', database.collection('events'));
     app.set('users', database.collection('users'));
-    app.set('deletedevents',database.collection('deletedevents'));
+    app.set('deletedevents', database.collection('deletedevents'));
+
+    // Create a new GridFS bucket for file storage
+    const gridfsBucket = new GridFSBucket(database, {
+      bucketName: 'images'  // You can change the bucket name if you want
+    });
+
+    // Set the GridFS bucket in the app instance
+    app.set('gridfsBucket', gridfsBucket);
+
     // Import and use eventApp and userApp express routers
     const eventsApp = require("./API/eventsApi");
     const usersApp = require("./API/userApi");
