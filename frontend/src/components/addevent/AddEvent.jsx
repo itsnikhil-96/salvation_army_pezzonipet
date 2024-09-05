@@ -71,7 +71,7 @@ function AddEvent() {
     imagesFiles.forEach(file => formData.append('images', file));
 
     try {
-      const res = await fetch("http://localhost:5000/event-api/create", {
+      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
         method: 'POST',
         body: formData,
       });
