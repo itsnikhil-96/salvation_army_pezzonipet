@@ -6,7 +6,7 @@ const app = express();
 
 // Use CORS to allow requests from the frontend
 app.use(cors({
-  origin: 'http://localhost:5173'  // Update this if your frontend is hosted elsewhere
+  origin: 'https://salvation-army-pezzonipet-cyf5.vercel.app'  // Update this if your frontend is hosted elsewhere
 }));
 
 // Middleware to parse JSON
