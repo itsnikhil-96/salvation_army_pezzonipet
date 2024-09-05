@@ -12,23 +12,36 @@ app.use(cors({
 // Middleware to parse JSON
 app.use(express.json());
 
-// Import MongoClient from MongoDB
-const { MongoClient } = require("mongodb");
+// Import MongoClient and GridFSBucket from MongoDB
+const { MongoClient, GridFSBucket } = require("mongodb");
 const mClient = new MongoClient(process.env.DB_URL);
 
 mClient.connect()
   .then((connectionObj) => {
     const database = connectionObj.db('salvationarmy');
+
+    // Set collections
     app.set('events', database.collection('events'));
     app.set('users', database.collection('users'));
-    app.set('deletedevents',database.collection('deletedevents'));
+    app.set('deletedevents', database.collection('deletedevents'));
+
+    // Create a new GridFS bucket for file storage
+    const gridfsBucket = new GridFSBucket(database, {
+      bucketName: 'images'  // You can change the bucket name if you want
+    });
+
+    // Set the GridFS bucket in the app instance
+    app.set('gridfsBucket', gridfsBucket);
+
     // Import and use eventApp and userApp express routers
     const eventsApp = require("./API/eventsApi");
     const usersApp = require("./API/userApi");
     const deletedApp = require("./API/deletedApi");
+
     app.use("/event-api", eventsApp);
     app.use("/user-api", usersApp);
-    app.use("/deleted-api",deletedApp);
+    app.use("/deleted-api", deletedApp);
+
     // Handle invalid paths
     app.use('*', (req, res) => {
       console.log(`Invalid path: ${req.path}`);
@@ -40,7 +53,7 @@ mClient.connect()
       console.error("Error occurred:", err);  // Log the error
       res.status(500).send({ message: "An error occurred", errorMessage: err.message });
     });
-    
+
     // Start the server on the specified port
     const PORT = process.env.PORT;
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

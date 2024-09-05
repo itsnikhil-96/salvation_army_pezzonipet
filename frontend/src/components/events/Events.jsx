@@ -64,7 +64,6 @@ function Events() {
     const handleConfirmDelete = async () => {
         if (username === currentUser.username) {
             try {
-                // Delete event from the event collection
                 const encodedEventName = encodeURIComponent(selectedEvent.eventname);
                 const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
                     method: 'DELETE',
@@ -82,8 +81,8 @@ function Events() {
                 const deleteddetails = {
                     eventname: selectedEvent.eventname,
                     dateOfEvent: selectedEvent.dateOfEvent,
-                    mainLogo: selectedEvent.mainLogo,
-                    images: selectedEvent.images,
+                    mainLogo: selectedEvent.mainLogoData,
+                    images: selectedEvent.imagesData,
                     username
                 };
 
@@ -91,8 +90,6 @@ function Events() {
                 formData.append('eventname', deleteddetails.eventname);
                 formData.append('dateOfEvent', deleteddetails.dateOfEvent);
                 formData.append('username', deleteddetails.username);
-
-                
 
                 const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
                     method: 'POST',
@@ -140,7 +137,6 @@ function Events() {
             </div>
 
             <div className='row text-center marginht mt-5'>
-                
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
                     <div 
@@ -150,11 +146,13 @@ function Events() {
                     >
                         <div className='card h-100 bg-light shadow-sm text-center'>
                             <div className="card-body d-flex flex-column justify-content-between">
-                                <img 
-                                    src={`data:image/jpeg;base64,${event.mainLogo}`} 
-                                    className="eventimg img-fluid" 
-                                    alt={event.eventname} 
-                                />
+                                {event.mainLogoData && (
+                                    <img 
+                                        src={`data:image/jpeg;base64,${event.mainLogoData}`} 
+                                        className="eventimg img-fluid" 
+                                        alt={event.eventname} 
+                                    />
+                                )}
                                 <p className="fs-3 mt-3 english shadowbox text-center">
                                     <span className='eventname'>{event.eventname}</span><br />
                                     <span className='fs-3'>{new Date(event.dateOfEvent).toLocaleDateString()}</span>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import imageCompression from 'browser-image-compression';
 import './AddEvent.css';
 
@@ -9,12 +8,14 @@ function AddEvent() {
   const [dateOfEvent, setDateOfEvent] = useState('');
   const [mainLogoFile, setMainLogoFile] = useState(null); 
   const [imagesFiles, setImagesFiles] = useState([]); 
+  const [imageCount, setImageCount] = useState(0); // State for image count
   const [message, setMessage] = useState(''); 
   const [messageType, setMessageType] = useState(''); 
   const [isUploading, setIsUploading] = useState(false);
 
   const navigate = useNavigate();
 
+  // Handle the main logo compression and selection
   const handleMainLogoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -33,22 +34,36 @@ function AddEvent() {
 
   const handleImagesChange = async (e) => {
     const files = Array.from(e.target.files);
+    setImageCount(0);
+    if (files.length > 20) {
+      setImageCount(1);
+      return;
+    }
+
     try {
       const options = {
-        maxSizeMB: 1,
+        maxSizeMB: 3,
         maxWidthOrHeight: 800,
       };
       const compressedFiles = await Promise.all(
         files.map(file => imageCompression(file, options))
       );
       setImagesFiles(compressedFiles);
+      setMessage('');
+      setMessageType('');
     } catch (error) {
       console.error("Error compressing images:", error);
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (imageCount > 20) {
+      return;
+    }
+
     setIsUploading(true);
 
     const formData = new FormData();
@@ -58,32 +73,24 @@ function AddEvent() {
     imagesFiles.forEach(file => formData.append('images', file));
 
     try {
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: (progressEvent) => {
-          // This event can be used to update progress if you still want to track it
-          // For now, we are only displaying a static message.
-        },
-        timeout: 600000 
-      };
+      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
+        method: 'POST',
+        body: formData,
+      });
 
-      const res = await axios.post("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", formData, config);
-       console.log(res.status);
+      const data = await res.json();
+
       if (res.status === 201) {
-        setMessageType('success'); 
-        setMessage(res.data.message); 
-        setTimeout(() => {
-          navigate("/events"); 
-        }, 1000); 
+        setMessageType('success');
+        setMessage(data.message);
+        navigate("/events");
       } else {
-        setMessageType('error'); 
-        throw new Error(res.data.message || 'Failed to add event'); 
+        setMessageType('error');
+        throw new Error(data.message || 'Failed to add event');
       }
     } catch (err) {
-      setMessageType('error'); 
-      setMessage(err.message); 
+      setMessageType('error');
+      setMessage(err.message);
     } finally {
       setIsUploading(false);
     }
@@ -92,9 +99,9 @@ function AddEvent() {
   return (
     <div className="form-container mt-5 english">
       <h3 className="heading">Add Event</h3>
-      <div className={`message ${messageType}`}>
-        {message && <p>{message}</p>}
-      </div>
+      <p className='text-center eventpics'>Maximum of 20 pics are allowed</p>
+
+      {message && <p className={`message ${messageType}`}>{message}</p>}
 
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
@@ -143,12 +150,18 @@ function AddEvent() {
         </div>
 
         <div className="text-center">
-          {!isUploading ? (
-            <button className="addeventbutton" type="submit">
+          {imageCount ? (
+            <p className="uploading-message text-danger">Can't upload more than 20 pics.</p>
+          ) : isUploading ? (
+            <p className="uploading-message">Uploading event, please wait...</p>
+          ) : (
+            <button
+              className="addeventbutton"
+              type="submit"
+              disabled={imageCount === 0}
+            >
               Add Event
             </button>
-          ) : (
-            <p>Please wait, uploading images...</p>
           )}
         </div>
       </form>

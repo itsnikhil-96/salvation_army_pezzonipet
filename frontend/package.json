@@ -8,21 +8,24 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "node server.js", 
+    "start": "node server.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-
   },
   "dependencies": {
     "axios": "^1.7.6",
     "bootstrap": "^5.3.3",
     "browser-image-compression": "^2.0.2",
     "json-server": "^1.0.0-beta.1",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.6.0",
+    "multer-gridfs-storage": "^5.0.2",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.1",
     "react-icons": "^5.2.1",
+    "react-intersection-observer": "^9.13.0",
     "react-router-dom": "^6.25.1"
   },
   "devDependencies": {

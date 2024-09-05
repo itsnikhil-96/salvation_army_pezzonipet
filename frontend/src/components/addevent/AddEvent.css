@@ -13,7 +13,11 @@
   border-radius: 4px;
   margin-top: 10px;
 }
-
+.eventpics
+{
+  color: #732f4b;
+  font-weight: bold;
+}
 .progress {
   height: 10px;
   background-color: #4caf50;
