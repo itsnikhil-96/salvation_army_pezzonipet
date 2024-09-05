@@ -27,7 +27,6 @@ function Events() {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 const data = await response.json();
-                console.log("Fetched data:", data); // Log the data fetched
                 setEvents(prevEvents => [...prevEvents, ...data.payload]);
                 if (data.payload.length < limit) {
                     setHasMore(false);

@@ -60,10 +60,7 @@ function AddEvent() {
   // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-
     setIsUploading(true);
-
     const formData = new FormData();
     formData.append('eventname', eventName);
     formData.append('dateOfEvent', dateOfEvent);
@@ -156,7 +153,6 @@ function AddEvent() {
             <button
               className="addeventbutton"
               type="submit"
-              disabled={imageCount === 0}
             >
               Add Event
             </button>
