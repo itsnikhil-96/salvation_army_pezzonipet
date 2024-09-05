@@ -8,7 +8,6 @@ function AddEvent() {
   const [dateOfEvent, setDateOfEvent] = useState('');
   const [mainLogoFile, setMainLogoFile] = useState(null); 
   const [imagesFiles, setImagesFiles] = useState([]); 
-  const [imageCount, setImageCount] = useState(0); // State for image count
   const [message, setMessage] = useState(''); 
   const [messageType, setMessageType] = useState(''); 
   const [isUploading, setIsUploading] = useState(false);
@@ -19,40 +18,44 @@ function AddEvent() {
   const handleMainLogoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      console.log(`Original main logo file size: ${file.size / 1024} KB`);
       try {
         const options = {
-          maxSizeMB: 2,
+          maxSizeMB: 2,  // Set maximum file size to 2 MB
           maxWidthOrHeight: 800,
         };
         const compressedFile = await imageCompression(file, options);
+        console.log(`Compressed main logo file size: ${compressedFile.size / 1024} KB`);
         setMainLogoFile(compressedFile);
       } catch (error) {
-        console.error("Error compressing image:", error);
+        console.error("Error compressing main logo image:", error);
+        setMessageType('error');
+        setMessage('Error compressing main logo image.');
       }
     }
   };
 
   const handleImagesChange = async (e) => {
     const files = Array.from(e.target.files);
-    setImageCount(0);
-    if (files.length > 20) {
-      setImageCount(1);
-      return;
-    }
-
     try {
       const options = {
-        maxSizeMB: 3,
+        maxSizeMB: 1,
         maxWidthOrHeight: 800,
       };
       const compressedFiles = await Promise.all(
-        files.map(file => imageCompression(file, options))
+        files.map(async (file) => {
+          console.log(`Original image file size: ${file.size / 1024} KB`);
+          const compressedFile = await imageCompression(file, options);
+          totalCompressedSize += compressedFile.size;
+          console.log(`Compressed image file size: ${compressedFile.size / 1024} KB`);
+          return compressedFile;
+        })
       );
       setImagesFiles(compressedFiles);
-      setMessage('');
-      setMessageType('');
     } catch (error) {
       console.error("Error compressing images:", error);
+      setMessageType('error');
+      setMessage('Error compressing images.');
     }
   };
 
@@ -66,6 +69,13 @@ function AddEvent() {
 
     setIsUploading(true);
 
+    if (!eventName || !dateOfEvent || !mainLogoFile || imagesFiles.length === 0) {
+      setMessageType('error');
+      setMessage('Please fill in all fields and select at least one image.');
+      setIsUploading(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('eventname', eventName);
     formData.append('dateOfEvent', dateOfEvent);
@@ -73,17 +83,25 @@ function AddEvent() {
     imagesFiles.forEach(file => formData.append('images', file));
 
     try {
-      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", {
-        method: 'POST',
-        body: formData,
-      });
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          // This event can be used to update progress if you still want to track it
+          // For now, we are only displaying a static message.
+        },
+        timeout: 600000 
+      };
 
-      const data = await res.json();
-
+      const res = await axios.post("https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/create", formData, config);
+       console.log(res.status);
       if (res.status === 201) {
-        setMessageType('success');
-        setMessage(data.message);
-        navigate("/events");
+        setMessageType('success'); 
+        setMessage(res.data.message); 
+        setTimeout(() => {
+          navigate("/events"); 
+        }, 1000); 
       } else {
         setMessageType('error');
         throw new Error(data.message || 'Failed to add event');
@@ -147,6 +165,7 @@ function AddEvent() {
             required
             disabled={isUploading}
           />
+          <p>Compressed Images Size: {(compressedImagesSize / 1024).toFixed(2)} KB</p>
         </div>
 
         <div className="text-center">
