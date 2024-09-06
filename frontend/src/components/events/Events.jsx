@@ -22,7 +22,7 @@ function Events() {
         const fetchEvents = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?skip=${page * limit}&limit=${limit}`);
+                const response = await fetch(`http://localhost:5000/event-api/events?skip=${page * limit}&limit=${limit}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -66,7 +66,7 @@ function Events() {
             try {
                 const encodedEventName = encodeURIComponent(selectedEvent.eventname);
                 const encodedUsername = encodeURIComponent(username);  // Encode the username to include it in the URL
-                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
+                const res2 = await fetch(`http://localhost:5000/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
                     method: 'DELETE',
                 });
     

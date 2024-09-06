@@ -9,7 +9,20 @@
     height: 100%;
     object-fit: cover; 
 }
+.delete{
+    background-color: rgb(244, 85, 85);
+    color: white;
+    border-radius: 5px;
+}
 
+.download-btn
+{
+    background-color: rgb(13, 83, 224);
+    color: white;
+    border-radius: 5px;
+
+
+}
 .full-screen-viewer {
     position: fixed;
     top: 0;
@@ -29,20 +42,6 @@
     object-fit: contain;
 }
 
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 30px;
-    background-color: red; 
-    color: white;
-    border: none;
-    border-radius: 5px;
-    width: 30px;
-    height: 30px;
-    line-height: 20px;
-    cursor: pointer;
-}
 
 .prev-btn,
 .next-btn {

@@ -32,7 +32,7 @@ function Register() {
     }
 
     try {
-      const res = await fetch("https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user", {
+      const res = await fetch("http://localhost:5000/user-api/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),

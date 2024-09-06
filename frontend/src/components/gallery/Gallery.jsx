@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import './Gallery.css';
+import { MdDownload } from "react-icons/md";
+import { ImCross } from "react-icons/im";
 import { userLoginContext } from '../contexts/userLoginContext';
 
 function Gallery() {
@@ -29,7 +31,7 @@ function Gallery() {
             try {
                 // skip=${page * limit } will skip the already loaded data
                 // limit will fetch only 3 images for one fetch reducing API load
-                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
+                const res = await fetch(`http://localhost:5000/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
@@ -90,7 +92,7 @@ function Gallery() {
         });
 
         try {
-            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images`, {
+            const res = await fetch(`http://localhost:5000/event-api/events/${eventname}/images`, {
                 method: 'POST',
                 body: formData
             });
@@ -236,9 +238,9 @@ function Gallery() {
             {/* Full-Screen Image Viewer */}
             {isViewerOpen && eventImages.length > 0 && (
                 <div className="full-screen-viewer" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-                    <button className="close-btn" onClick={handleCloseViewer}>
-                        &times;
-                    </button>
+                 <span className="delete fs-4 text-center position-absolute top-0 end-0 m-4" style={{ cursor: 'pointer' }}>
+                     <ImCross className='mb-1 mx-2 p-1'/>
+                 </span>
                     {currentImageIndex > 0 && (
                         <button className="prev-btn" onClick={handlePrevImage}>
                             &lt;
@@ -248,10 +250,13 @@ function Gallery() {
                     <a
                         href={eventImages[currentImageIndex]}
                         download={`image-${currentImageIndex + 1}.jpg`}
-                        className="btn btn-info download-btn position-absolute top-0 start-0 m-4"
+                        className="position-absolute top-0 start-0 m-4 download-btn fs-3"
                     >
-                        Download
+                         <span className="" style={{ cursor: 'pointer' }}>
+                            <MdDownload className='mb-1 mx-2'/>
+                         </span>
                     </a>
+                   
                     <img
                         src={eventImages[currentImageIndex]}
                         alt={`Gallery for ${eventname}`}
