@@ -36,7 +36,7 @@ function AddEvent() {
   const handleImagesChange = async (e) => {
     const files = Array.from(e.target.files);
     setImageCount(0);
-    if (files.length > 20) {
+    if (files.length > 15) {
       setImageCount(1);
       return;
     }
@@ -94,7 +94,7 @@ function AddEvent() {
   return (
     <div className="form-container mt-5 english">
       <h3 className="heading">Add Event</h3>
-      <p className='text-center eventpics'>Maximum of 20 pics are allowed</p>
+      <p className='text-center eventpics'>Maximum of 15 pics are allowed</p>
 
       {message && <p className={`message ${messageType}`}>{message}</p>}
 
@@ -146,7 +146,7 @@ function AddEvent() {
 
         <div className="text-center">
           {imageCount? (
-            <p className="error-message">Can't upload more than 20 pics.</p>
+            <p className="error-message">Can't upload more than 15 pics.</p>
           ) : isUploading ? (
             <p className="uploading-message">Uploading event, please wait...</p>
           ) : (
