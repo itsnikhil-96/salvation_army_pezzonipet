@@ -1,39 +1,51 @@
 const express = require('express');
 const multer = require('multer');
+const { ObjectId } = require('mongodb');
+
 const deletedApp = express.Router();
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const storage = multer.memoryStorage(); // Use memory storage to buffer files in memory
+const upload = multer({ storage: storage }); // Configure multer for file upload
 
 // Define the delete route
 deletedApp.post("/delete", upload.fields([{ name: 'mainLogo', maxCount: 1 }, { name: 'images' }]), async (req, res) => {
+    const deletedCollection = req.app.get('deletedevents'); // Access deleted events collection
+    const gridfsBucket = req.app.get('gridfsBucket'); // Access GridFS bucket for file storage
+
     try {
-        const deletedCollection = req.app.get('deletedevents'); // Access the deleted collection from the app context
-        const { eventname, dateOfEvent } = req.body;
+        const { eventname, dateOfEvent, username } = req.body;
 
-        // Check if files are present and extract their buffers
-        const mainLogo = req.files && req.files['mainLogo'] ? req.files['mainLogo'][0].buffer : null;
-        const images = req.files && req.files['images'] ? req.files['images'].map(file => file.buffer) : [];
-
-        // Log the uploaded files for debugging purposes
-
-        const newEvent = {
-            eventname,
-            dateOfEvent,
-            mainLogo,
-            images,
-        };
-
-        // Check if the event is already in the deleted collection
+        // Check if event has already been deleted
         const alreadyDeleted = await deletedCollection.findOne({ eventname, dateOfEvent });
         if (alreadyDeleted) {
             return res.status(409).send({ message: "Event already present in deleted collection" });
         }
 
-        // Insert the event into the deleted collection
-        await deletedCollection.insertOne(newEvent);
-        res.status(201).send({ message: 'Event restored successfully in database', event: newEvent });
+        // Store the main logo in GridFS
+        let mainLogoId = null;
+            mainLogoId = req.files['mainLogoId'][0]; // Store the ID of the uploaded logo
 
+        // Store the images in GridFS and save their IDs
+        const imageIds = [];
+        if (req.files && req.files['images']) {
+            for (const image of req.files['images']) {
+                imageIds.push(image); // Store the ID of each image
+            }
+        }
+
+        // Insert the event metadata and file references into the deleted collection
+        const newEvent = {
+            eventname,
+            dateOfEvent,
+            username,
+            mainLogoId,
+            imageIds
+        };
+
+        await deletedCollection.insertOne(newEvent);
+
+        res.status(201).send({ message: 'Event stored in deleted collection', event: newEvent });
     } catch (error) {
+        console.error('Error deleting event:', error);
         res.status(500).send({ message: "Failed to log deletion", error: error.message });
     }
 });

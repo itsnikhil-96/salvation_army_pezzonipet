@@ -222,30 +222,31 @@ eventsApp.delete('/events', async (req, res) => {
     try {
         const eventName = decodeURIComponent(req.query.eventname);
         const eventsCollection = req.app.get('events');
+        const deletedEventsCollection = req.app.get('deletedevents'); // Deleted events collection
         const gridfsBucket = req.app.get('gridfsBucket'); // Get the GridFS bucket
 
+        // Find the event in the events collection
         const event = await eventsCollection.findOne({ eventname: eventName });
         if (!event) {
             return res.status(404).send({ message: 'Event not found' });
         }
 
-        // Delete the main logo and images from GridFS
-        if (event.mainLogoId) {
-            await gridfsBucket.delete(new ObjectId(event.mainLogoId));
-        }
-        if (event.imagesIds && event.imagesIds.length > 0) {
-            for (const imageId of event.imagesIds) {
-                await gridfsBucket.delete(new ObjectId(imageId));
-            }
-        }
+        // Move the event details to the deletedevents collection
+        const deletedEvent = {
+            ...event,
+            deletedBy: req.query.username, // Add username of the user deleting the event
+        };
 
+        await deletedEventsCollection.insertOne(deletedEvent);
+
+        // Delete the event from the events collection (do NOT delete images from GridFS)
         const deletionResult = await eventsCollection.deleteOne({ eventname: eventName });
 
         if (deletionResult.deletedCount === 0) {
             return res.status(404).send({ message: 'Event not found' });
         }
 
-        res.status(200).send({ message: 'Event deleted successfully' });
+        res.status(200).send({ message: 'Event deleted and logged successfully' });
     } catch (error) {
         console.error('Error deleting event:', error);
         res.status(500).send({ message: 'Failed to delete event', error: error.message });

@@ -65,44 +65,18 @@ function Events() {
         if (username === currentUser.username) {
             try {
                 const encodedEventName = encodeURIComponent(selectedEvent.eventname);
-                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}`, {
+                const encodedUsername = encodeURIComponent(username);  // Encode the username to include it in the URL
+                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
                     method: 'DELETE',
                 });
-
+    
                 if (res2.ok) {
                     setEvents(events.filter(event => event.eventname !== selectedEvent.eventname));
-                    alert('Successfully deleted Event');
+                    alert('Successfully deleted event');
                     setSelectedEvent(null);
                 } else {
                     const result = await res2.json();
                     alert(`Failed to delete event: ${result.message}`);
-                }
-
-                // Save deleted event details
-                const deleteddetails = {
-                    eventname: selectedEvent.eventname,
-                    dateOfEvent: selectedEvent.dateOfEvent,
-                    mainLogo: selectedEvent.mainLogoData,
-                    images: selectedEvent.imagesData,
-                    username
-                };
-
-                const formData = new FormData();
-                formData.append('eventname', deleteddetails.eventname);
-                formData.append('dateOfEvent', deleteddetails.dateOfEvent);
-                formData.append('username', deleteddetails.username);
-
-                const res = await fetch('https://salvation-army-pezzonipet-gn1u.vercel.app/deleted-api/delete', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (res.ok) {
-                    const result = await res.json();
-                    console.log('Event saved to deleted collection successfully:', result);
-                } else {
-                    console.error('Failed to save deleted event:', res.statusText);
-                    alert('Failed to save deleted event. Please try again later.');
                 }
             } catch (error) {
                 console.error('Error deleting event:', error);
@@ -112,6 +86,7 @@ function Events() {
             alert('Username does not match!');
         }
     };
+    
 
     const closeModal = () => {
         setSelectedEvent(null);
@@ -196,7 +171,7 @@ function Events() {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <p>Do you really want to delete the event <strong>{selectedEvent.eventname}</strong>? We will have info of the deleted event for Restore Purpose</p>
+                                <p>Do you really want to delete the event <strong>{selectedEvent.eventname}</strong>?</p>
                                 <div className="form-group">
                                     <label htmlFor="username">Enter your username to confirm:</label>
                                     <input
