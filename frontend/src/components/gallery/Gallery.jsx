@@ -120,32 +120,34 @@ function Gallery() {
         setCurrentImageIndex(null);
     };
 
+    const touchStartXRef = useRef(0);  // For touch events
+
+    const handleTouchStart = (e) => {
+        touchStartXRef.current = e.touches[0].clientX;  // Capture touch start position
+    };
+    
+    const handleTouchEnd = (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchDiff = touchStartXRef.current - touchEndX;
+    
+        if (touchDiff > 50) {
+            handleNextImage();  // Swipe left
+        } else if (touchDiff < -50) {
+            handlePrevImage();  // Swipe right
+        }
+    };
+    
     const handleNextImage = () => {
         if (currentImageIndex < eventImages.length - 1) {
             setCurrentImageIndex((prevIndex) => prevIndex + 1);
         }
     };
-
+    
     const handlePrevImage = () => {
         if (currentImageIndex > 0) {
             setCurrentImageIndex((prevIndex) => prevIndex - 1);
         }
-    };
-
-    const handleTouchStart = (e) => {
-        // Handle touch start
-        this.touchStartX = e.touches[0].clientX;
-    };
-
-    const handleTouchEnd = (e) => {
-        // Handle touch end
-        const touchEndX = e.changedTouches[0].clientX;
-        if (this.touchStartX - touchEndX > 50) {
-            handleNextImage();  // Swipe left
-        } else if (touchEndX - this.touchStartX > 50) {
-            handlePrevImage();  // Swipe right
-        }
-    };
+    };    
 
     if (error) {
         return <div className="container mt-5 alert alert-danger"><h2>{error}</h2></div>;
