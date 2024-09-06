@@ -31,7 +31,7 @@ function Gallery() {
             try {
                 // skip=${page * limit } will skip the already loaded data
                 // limit will fetch only 3 images for one fetch reducing API load
-                const res = await fetch(`http://localhost:5000/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
+                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
@@ -92,7 +92,7 @@ function Gallery() {
         });
 
         try {
-            const res = await fetch(`http://localhost:5000/event-api/events/${eventname}/images`, {
+            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images`, {
                 method: 'POST',
                 body: formData
             });
