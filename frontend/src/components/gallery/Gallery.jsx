@@ -132,7 +132,7 @@ function Gallery() {
             setCurrentImageIndex((prevIndex) => prevIndex - 1);
         }
     };
-
+  useEffect(() => {
     const handleDeleteImage = async () => {
         
         try {
@@ -152,6 +152,7 @@ function Gallery() {
             setImageToDelete(null);
         }
     };
+ }, [eventImages]);
 
     const closeModal = () => {
         setShowModal(false);
