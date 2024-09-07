@@ -333,5 +333,45 @@ eventsApp.delete('/events', async (req, res) => {
 });
 
 
+eventsApp.delete('/events/:eventname/images/:index', async (req, res) => {
+    try {
+        const { eventname, index } = req.params;
+        const eventsCollection = req.app.get('events');
+        const gridfsBucket = req.app.get('gridfsBucket');
+
+        // Find the event by name
+        const event = await eventsCollection.findOne({ eventname });
+        if (!event) {
+            return res.status(404).send({ message: 'Event not found' });
+        }
+
+        // Ensure index is valid and within range
+        const imageIndex = parseInt(index, 10);
+        if (isNaN(imageIndex) || imageIndex < 0 || imageIndex >= event.imagesIds.length) {
+            return res.status(400).send({ message: 'Invalid image index' });
+        }
+
+        // Get the imageId based on the index
+        const imageId = event.imagesIds[imageIndex];
+        if (!ObjectId.isValid(imageId)) {
+            return res.status(400).send({ message: 'Invalid image ID' });
+        }
+
+        // Remove the image from GridFS
+        await gridfsBucket.delete(new ObjectId(imageId)); // Proper deletion method
+
+        // Update the event to remove the image ID from the imagesIds array
+        await eventsCollection.updateOne(
+            { eventname },
+            { $pull: { imagesIds: imageId } }
+        );
+
+        res.status(200).send({ message: 'Image deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting image:', error);
+        res.status(500).send({ message: 'Failed to delete image', error: error.message });
+    }
+});
+
 
 module.exports = eventsApp;
