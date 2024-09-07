@@ -2,47 +2,44 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import './Gallery.css';
 import { MdDownload } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { ImCross } from "react-icons/im";
 import { userLoginContext } from '../contexts/userLoginContext';
 
 function Gallery() {
-    const { userLoginStatus } = useContext(userLoginContext);  // To add additional pics for checking condition
-    const { eventname } = useParams();    // For displaying on top
-    const [eventImages, setEventImages] = useState([]); // Storing images
-    const [page, setPage] = useState(0);  // For no of pages ( Lazy Loading )
-    const [hasMore, setHasMore] = useState(true);  // To check whether there are more images to load
-    const [loading, setLoading] = useState(false); //Lazy loading state
-    const [error, setError] = useState(null);  // Errors
-    const [selectedFiles, setSelectedFiles] = useState([]);  //while uploading storing images in that array
-    const [isUploading, setIsUploading] = useState(false);  //Same state for button ( conditional rendering)
-    const [isViewerOpen, setIsViewerOpen] = useState(false);  //Full screen
-    const [currentImageIndex, setCurrentImageIndex] = useState(null);  //For display of current image only
+    const { userLoginStatus } = useContext(userLoginContext);  
+    const { eventname } = useParams();  
+    const [eventImages, setEventImages] = useState([]); 
+    const [page, setPage] = useState(0);  
+    const [hasMore, setHasMore] = useState(true);  
+    const [loading, setLoading] = useState(false); 
+    const [error, setError] = useState(null);  
+    const [selectedFiles, setSelectedFiles] = useState([]);  
+    const [isUploading, setIsUploading] = useState(false);  
+    const [isViewerOpen, setIsViewerOpen] = useState(false);  
+    const [currentImageIndex, setCurrentImageIndex] = useState(null);  
+    
+    const [showModal, setShowModal] = useState(false);  // State for the delete confirmation modal
+    const [imageToDelete, setImageToDelete] = useState(null);  // State for the image to be deleted
 
-    const limit = 3;  // No of images to fetch per page
+    const limit = 3;  
 
-    const observer = useRef();  // Reference to the intersection observer
-    const lastImageRef = useRef();  // Reference to the last image element
+    const observer = useRef();  
+    const lastImageRef = useRef();  
+    const touchStartXRef = useRef(null);  
 
     useEffect(() => {
         const fetchImages = async () => {
-
-            setLoading(true); // starts loading images
-
+            setLoading(true); 
             try {
-                // skip=${page * limit } will skip the already loaded data
-                // limit will fetch only 3 images for one fetch reducing API load
-                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
+                const res = await fetch(`http://localhost:5000/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
                 const data = await res.json();
-
-                // At last if only 2 or less images came , there are no more images to load
                 if (data.payload.length < limit) {
                     setHasMore(false);
                 }
-
-                // Append new images to the existing list
                 setEventImages((prevImages) => [...prevImages, ...data.payload]);
             } catch (err) {
                 setError(err.message);
@@ -50,27 +47,18 @@ function Gallery() {
                 setLoading(false);
             }
         };
-
         fetchImages();
-    }, [eventname, page]);   // eventname is included because if we move to new event that event pics will be displayed 
-                             //page is included because for every fetch page will increase so it should again fetch the data
+    }, [eventname, page]);
 
     useEffect(() => {
-
-        //If already images are being loaded dont load again if scroll or if there are no images no need to load
         if (loading || !hasMore) return;
-
-        
-        if (observer.current) observer.current.disconnect();  // Disconnect previous observer if any
-
+        if (observer.current) observer.current.disconnect();
         observer.current = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
-                setPage((prevPage) => prevPage + 1);  // Load more images by increasing the page number
+                setPage((prevPage) => prevPage + 1);
             }
         });
-
-        if (lastImageRef.current) observer.current.observe(lastImageRef.current);  // Observe the last image
-
+        if (lastImageRef.current) observer.current.observe(lastImageRef.current);
     }, [loading, hasMore]);
 
     const handleFileChange = (e) => {
@@ -83,24 +71,19 @@ function Gallery() {
             setSelectedFiles([]);
             return;
         }
-
-        setIsUploading(true);  
-
+        setIsUploading(true);
         const formData = new FormData();
         selectedFiles.forEach(file => {
             formData.append('images', file);
         });
-
         try {
-            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images`, {
+            const res = await fetch(`http://localhost:5000/event-api/events/${eventname}/images`, {
                 method: 'POST',
                 body: formData
             });
-
             if (!res.ok) {
                 throw new Error('Failed to upload images');
             }
-
             const data = await res.json();
             setEventImages((prevImages) => [ ...prevImages, ...data.payload.images ]);
             setSelectedFiles([]);
@@ -108,7 +91,8 @@ function Gallery() {
         } catch (err) {
             alert(err.message);
         } finally {
-            setIsUploading(false);  // Hide uploading state
+            setIsUploading(false);
+            setSelectedFiles([]);
         }
     };
 
@@ -122,34 +106,66 @@ function Gallery() {
         setCurrentImageIndex(null);
     };
 
-    const touchStartXRef = useRef(0);  // For touch events
-
     const handleTouchStart = (e) => {
-        touchStartXRef.current = e.touches[0].clientX;  // Capture touch start position
+        touchStartXRef.current = e.touches[0].clientX;
     };
-    
+
     const handleTouchEnd = (e) => {
         const touchEndX = e.changedTouches[0].clientX;
         const touchDiff = touchStartXRef.current - touchEndX;
-    
         if (touchDiff > 50) {
-            handleNextImage();  // Swipe left
+            handleNextImage();
         } else if (touchDiff < -50) {
-            handlePrevImage();  // Swipe right
+            handlePrevImage();
         }
     };
-    
+
     const handleNextImage = () => {
         if (currentImageIndex < eventImages.length - 1) {
             setCurrentImageIndex((prevIndex) => prevIndex + 1);
         }
     };
-    
+
     const handlePrevImage = () => {
         if (currentImageIndex > 0) {
             setCurrentImageIndex((prevIndex) => prevIndex - 1);
         }
-    };    
+    };
+
+    const handleDeleteImage = async () => {
+        
+        try {
+            const res = await fetch(`http://localhost:5000/event-api/events/${eventname}/images/${imageToDelete}`, {
+                method: 'DELETE'
+            });
+            if (!res.ok) {
+                throw new Error('Failed to delete image');
+            }
+            setEventImages((prevImages) => prevImages.filter(image => image !== imageToDelete));
+            alert('Image deleted successfully');
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setShowModal(false);
+            setImageToDelete(null);
+        }
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    const handleModalDelete = (image,currentImageIndex) => {
+        console.log(currentImageIndex)
+        setImageToDelete(currentImageIndex);
+        setShowModal(true);
+    };
+
+    const handleOutsideClick = (e) => {
+        if (e.target === e.currentTarget) {
+            closeModal();
+        }
+    };
 
     if (error) {
         return <div className="container mt-5 alert alert-danger"><h2>{error}</h2></div>;
@@ -157,7 +173,7 @@ function Gallery() {
 
     return (
         <div className="container mt-5 position-relative">
-            <div className='marginbtn'>
+            <div style={{ minHeight: userLoginStatus ? '50px' : '0px' }}>
                 {userLoginStatus && (
                     <>
                         <input
@@ -198,6 +214,7 @@ function Gallery() {
                     </>
                 )}
             </div>
+
             <h1 className="text-center mb-3 fs-3 heading">{eventname} Gallery</h1>
             <div className="row">
                 {eventImages.length > 0 ? (
@@ -235,28 +252,37 @@ function Gallery() {
                 <div className="text-center loading">Loading more images...</div>
             )}
 
-            {/* Full-Screen Image Viewer */}
             {isViewerOpen && eventImages.length > 0 && (
                 <div className="full-screen-viewer" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-                 <span className="delete fs-4 text-center position-absolute top-0 end-0 m-4" style={{ cursor: 'pointer' }}>
-                     <ImCross className='mb-1 mx-2 p-1'/>
-                 </span>
+                    <span className="delete fs-4 text-center position-absolute top-0 end-0 m-4" style={{ cursor: 'pointer' }} onClick={handleCloseViewer}>
+                        <ImCross className='mb-1 mx-2 p-1'/>
+                    </span>
                     {currentImageIndex > 0 && (
                         <button className="prev-btn" onClick={handlePrevImage}>
                             &lt;
                         </button>
                     )}
-                    {/* Download button */}
-                    <a
-                        href={eventImages[currentImageIndex]}
-                        download={`image-${currentImageIndex + 1}.jpg`}
-                        className="position-absolute top-0 start-0 m-4 download-btn fs-3"
-                    >
-                         <span className="" style={{ cursor: 'pointer' }}>
-                            <MdDownload className='mb-1 mx-2'/>
-                         </span>
-                    </a>
-                   
+                    <div className='position-absolute top-0 start-0 m-4 '>
+                        <a
+                            href={eventImages[currentImageIndex]}
+                            download={`image-${currentImageIndex + 1}.jpg`}
+                            className="download-btn fs-3"
+                        >
+                            <span className="" style={{ cursor: 'pointer' }}>
+                                <MdDownload className='mb-1 mx-2'/>
+                            </span>
+                        </a>
+                        {userLoginStatus && (
+                            <span 
+                                className="delete fs-3" 
+                                style={{ cursor: 'pointer' }} 
+                                onClick={() => handleModalDelete(eventImages[currentImageIndex],currentImageIndex)}
+                            >
+                                <RiDeleteBin6Line className='mb-1 mx-2 deletebutton'/>
+                            </span>
+                        )}
+
+                    </div>
                     <img
                         src={eventImages[currentImageIndex]}
                         alt={`Gallery for ${eventname}`}
@@ -267,6 +293,29 @@ function Gallery() {
                             &gt;
                         </button>
                     )}
+                </div>
+            )}
+
+            {/* Modal for Delete Confirmation */}
+            {showModal && (
+                <div className="modal show" style={{ display: 'block' }} tabIndex="-1" role="dialog" onClick={handleOutsideClick}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Confirm Deletion</h5>
+                                <button type="button" className="close btn btn-danger px-2 py-0" onClick={closeModal}>
+                                    <span className='fs-4'>&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Do you really want to delete this image?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
+                                <button type="button" className="btn btn-danger" onClick={handleDeleteImage}>Delete</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

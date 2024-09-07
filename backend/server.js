@@ -23,6 +23,7 @@ mClient.connect()
     // Set collections
     app.set('events', database.collection('events'));
     app.set('users', database.collection('users'));
+    app.set('years',database.collection('years'));
     app.set('deletedevents', database.collection('deletedevents'));
 
     // Create a new GridFS bucket for file storage

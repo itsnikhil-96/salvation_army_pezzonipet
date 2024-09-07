@@ -15,11 +15,16 @@
     border-radius: 5px;
 }
 
+.deletebutton
+{
+    padding: 2px;
+}
 .download-btn
 {
     background-color: rgb(13, 83, 224);
     color: white;
     border-radius: 5px;
+    margin-right: 8px;
 
 
 }

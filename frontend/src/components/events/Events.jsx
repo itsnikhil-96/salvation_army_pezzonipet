@@ -22,7 +22,7 @@ function Events() {
         const fetchEvents = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?skip=${page * limit}&limit=${limit}`);
+                const response = await fetch(`http://localhost:5000/event-api/events?skip=${page * limit}&limit=${limit}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -66,7 +66,7 @@ function Events() {
             try {
                 const encodedEventName = encodeURIComponent(selectedEvent.eventname);
                 const encodedUsername = encodeURIComponent(username);  // Encode the username to include it in the URL
-                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
+                const res2 = await fetch(`http://localhost:5000/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
                     method: 'DELETE',
                 });
     
@@ -101,7 +101,7 @@ function Events() {
 
     return (
         <div className="container mt-3 position-relative">
-            <div className='marginbtn'>
+            <div style={{ minHeight: userLoginStatus ? '50px' : '0px' }}>
                 {userLoginStatus && (
                     <button 
                         className="btn btn-outline-secondary position-absolute top-0 end-0 me-3"
@@ -112,12 +112,12 @@ function Events() {
                 )}
             </div>
 
-            <div className='row text-center marginht mt-5'>
+            <div className='row text-center'>
                 {error && <div>Error: {error}</div>}
                 {events.map((event, index) => (
                     <div 
                         key={index} 
-                        className='col-lg-3 col-md-4 col-sm-6 col-12 mb-4'
+                        className='col-lg-4 col-xl-3 col-md-6 col-sm-6 col-12 mb-4'
                         ref={index === events.length - 1 ? lastEventElementRef : null}
                     >
                         <div className='card h-100 bg-light shadow-sm text-center'>
@@ -145,10 +145,10 @@ function Events() {
                                     {userLoginStatus && (
                                         <div className='col-2 p-0 m-0'>
                                             <button 
-                                                className='w-100 h-100 btn btn-danger text-center' 
+                                                className=' btn btn-danger text-center' 
                                                 style={{ marginLeft: '4px' }} 
                                                 onClick={() => handleDelete(event)}>
-                                                <RiDeleteBin6Line />
+                                               <div className='p-0'> <RiDeleteBin6Line /></div>
                                             </button>
                                         </div>
                                     )}

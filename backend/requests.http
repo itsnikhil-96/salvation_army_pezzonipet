@@ -1,8 +1,8 @@
-get https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events
+get http://localhost:5000/event-api/events
 
 ###
 
-post https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events
+post http://localhost:5000/event-api/events
 Content-Type: application/json
 
 {
@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ###
-put https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/VBS 2024
+put http://localhost:5000/event-api/events/VBS 2024
 Content-Type: application/json
 
 {
@@ -21,13 +21,13 @@ Content-Type: application/json
 }
 
 ###
-delete https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/ypannual2023
+delete http://localhost:5000/event-api/events/ypannual2023
 
 ###
-get https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/users
+get http://localhost:5000/user-api/users
 
 ###
-post https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/user
+post http://localhost:5000/user-api/user
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ###
-post https://salvation-army-pezzonipet-gn1u.vercel.app/user-api/login
+post http://localhost:5000/user-api/login
 Content-Type: application/json
 
 {

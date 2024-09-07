@@ -23,15 +23,15 @@ const getImageDataById = async (imageId, gridfsBucket) => {
     }
 };
 
-// Create a new event
 eventsApp.post('/create', upload.fields([
     { name: 'mainLogo', maxCount: 1 },
-    { name: 'images', maxCount: 15 } // Allow up to 100 images
+    { name: 'images', maxCount: 15 } // Allow up to 15 images
 ]), async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
         const deletedevents = req.app.get('deletedevents');
         const gridfsBucket = req.app.get('gridfsBucket');
+        const yearsCollection = req.app.get('years'); // Assuming you have a collection named 'years'
 
         const { eventname, dateOfEvent } = req.body;
 
@@ -86,8 +86,29 @@ eventsApp.post('/create', upload.fields([
             }
         }
 
-        // Insert the new event into the database after all uploads are complete
-        await eventsCollection.insertOne(newEvent);
+        // Insert the new event into the database
+        const result = await eventsCollection.insertOne(newEvent);
+        const eventId = result.insertedId; // The generated event ID by MongoDB
+
+        // Extract the year from dateOfEvent and store it
+        const eventYear = new Date(dateOfEvent).getFullYear();
+
+        // Check if the year document exists in the years collection
+        const yearDoc = await yearsCollection.findOne({ year: eventYear });
+
+        if (yearDoc) {
+            // If the document for that year exists, push the event ID into the array
+            await yearsCollection.updateOne(
+                { year: eventYear },
+                { $push: { events: eventId } }
+            );
+        } else {
+            // If no document exists for that year, create a new one
+            await yearsCollection.insertOne({
+                year: eventYear,
+                events: [eventId]
+            });
+        }
 
         return res.status(201).send({ message: 'Event created successfully', event: newEvent });
 
@@ -96,6 +117,7 @@ eventsApp.post('/create', upload.fields([
         return res.status(500).send({ message: 'Failed to create event', error: error.message });
     }
 });
+
 
 // Get all events with pagination
 eventsApp.get('/events', async (req, res) => {
@@ -252,5 +274,64 @@ eventsApp.delete('/events', async (req, res) => {
         res.status(500).send({ message: 'Failed to delete event', error: error.message });
     }
 });
+
+// Delete an image from an event
+
+eventsApp.delete('/events', async (req, res) => {
+    try {
+        const eventName = decodeURIComponent(req.query.eventname);
+        console.log('Event Name:', eventName); // Debug log
+
+        const eventsCollection = req.app.get('events');
+        const deletedEventsCollection = req.app.get('deletedevents'); // Deleted events collection
+        const yearsCollection = req.app.get('years'); // Years collection
+
+        // Find the event in the events collection
+        const event = await eventsCollection.findOne({ eventname: eventName });
+        if (!event) {
+            console.log('Event not found'); // Debug log
+            return res.status(404).send({ message: 'Event not found' });
+        }
+
+        const eventId = event._id;
+        const eventYear = new Date(event.dateOfEvent).getFullYear();
+        console.log('Event Year:', eventYear); // Debug log
+        console.log('Event ID:', eventId); // Debug log
+
+        // Move the event details to the deletedevents collection
+        const deletedEvent = {
+            ...event,
+            deletedBy: req.query.username, // Add username of the user deleting the event
+        };
+
+        await deletedEventsCollection.insertOne(deletedEvent);
+        console.log('Event moved to deletedEventsCollection'); // Debug log
+
+        // Delete the event from the events collection (do NOT delete images from GridFS)
+        const deletionResult = await eventsCollection.deleteOne({ eventname: eventName });
+        if (deletionResult.deletedCount === 0) {
+            console.log('Event not found during deletion'); // Debug log
+            return res.status(404).send({ message: 'Event not found' });
+        }
+
+        // Remove the event ID from the years collection
+        const pullResult = await yearsCollection.updateOne(
+            { year: eventYear },
+            { $pull: { events: ObjectId(eventId) } } // Ensure correct type is used
+        );
+
+        console.log('Pull Result:', pullResult); // Debug log
+        if (pullResult.modifiedCount === 0) {
+            console.log('No document was updated in the years collection'); // Debug log
+        }
+
+        res.status(200).send({ message: 'Event deleted and logged successfully' });
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).send({ message: 'Failed to delete event', error: error.message });
+    }
+});
+
+
 
 module.exports = eventsApp;

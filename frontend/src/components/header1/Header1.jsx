@@ -49,16 +49,16 @@ function Header1() {
   return (
     <div className='header1 pt-2'>
       <div className='row mainsay d-flex flex-wrap'>
-        <div className='col-md-0 col-sm-0 col-0 d-none col-lg-1 d-lg-block text-center mt-2 removedpic'>
+        <div className='col-md-0 col-sm-0 col-lg-0 col-0 d-none col-xl-1 d-xl-block text-center mt-2 removedpic'>
           <img src={logob} alt='Logo' className='logob' />
         </div>
         <div className='col-lg-10 col-md-10 col-sm-10 col-10 row mainrow'>
-          <div className='col-lg-12 col-md-9 col-sm-10 col-10 titlename text-center'>
+          <div className='col-lg-9 col-xl-12 col-md-9 col-sm-10 col-10 titlename text-center'>
             <p className='logoname'>The Salvation Army Pezzonipet Corps</p>
           </div>
-          <div className='col-lg-12 col-md-3 col-sm-2 col-2'>
+          <div className='col-xl-12 col-lg-1 col-md-3 col-sm-2 col-2'>
             <div className='text-center button-toggle'>
-              <nav className='navbar navbar-expand-lg'>
+              <nav className='navbar navbar-expand-xl'>
                 <div className='container-fluid' ref={navbarRef}>
                   <button
                     className='navbar-toggler button1'
@@ -108,7 +108,7 @@ function Header1() {
                       ) : (
                         <li className='nav-item dropdown'>
                           <span
-                            className='nav-link links dropdown-toggle'
+                            className='dropdown-toggle profile'
                             role='button'
                             id='navbarDropdown'
                             onClick={toggleDropdown}

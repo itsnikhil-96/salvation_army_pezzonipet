@@ -73,6 +73,11 @@ a.nav-link {
   text-decoration: none;
   border-radius: 10px;
 }
+.profile
+{
+  color: #a53860;
+  font-size: 1.2rem;
+}
 .icon {
   font-size: 35px;
   padding: 0;
@@ -121,6 +126,11 @@ ul.dropdown-menu.show {
     font-size: 1rem;
     padding: 5px;
   }
+  .profile{
+    font-size: 1rem;
+    padding: 5px;
+
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -157,6 +167,9 @@ ul.dropdown-menu.show {
     padding: 0;
   }
   a.nav-link {
+    font-size: 0.8rem;
+  }
+  .profile{
     font-size: 0.8rem;
   }
   .logoname {
