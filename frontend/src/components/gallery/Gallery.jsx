@@ -32,7 +32,7 @@ function Gallery() {
         const fetchImages = async () => {
             setLoading(true); 
             try {
-                const res = await fetch(`http://localhost:5000/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
+                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
@@ -77,7 +77,7 @@ function Gallery() {
             formData.append('images', file);
         });
         try {
-            const res = await fetch(`http://localhost:5000/event-api/events/${eventname}/images`, {
+            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images`, {
                 method: 'POST',
                 body: formData
             });
@@ -135,7 +135,7 @@ function Gallery() {
     const handleDeleteImage = async () => {
         
         try {
-            const res = await fetch(`http://localhost:5000/event-api/events/${eventname}/images/${imageToDelete}`, {
+            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images/${imageToDelete}`, {
                 method: 'DELETE'
             });
             if (!res.ok) {
