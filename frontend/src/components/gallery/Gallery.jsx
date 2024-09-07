@@ -92,7 +92,7 @@ function Gallery() {
             alert(err.message);
         } finally {
             setIsUploading(false);
-             setIsViewerOpen(false);
+             
             setSelectedFiles([]);
         }
     };
@@ -148,6 +148,7 @@ function Gallery() {
             alert(err.message);
         } finally {
             setShowModal(false);
+            setIsViewerOpen(false);
             setImageToDelete(null);
         }
     };
