@@ -254,9 +254,9 @@ function Gallery() {
 
             {isViewerOpen && eventImages.length > 0 && (
                 <div className="full-screen-viewer" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-                    <span className="delete fs-4 text-center position-absolute top-0 end-0 m-4" style={{ cursor: 'pointer' }} onClick={handleCloseViewer}>
-                        <ImCross className='mb-1 mx-2 p-1'/>
-                    </span>
+                 <span className="delete fs-4 text-center position-absolute top-0 end-0 m-4" style={{ cursor: 'pointer' }} onClick={handleCloseViewer}>
+                     <ImCross className='mb-1 mx-2 p-1'/>
+                 </span>
                     {currentImageIndex > 0 && (
                         <button className="prev-btn" onClick={handlePrevImage}>
                             &lt;
