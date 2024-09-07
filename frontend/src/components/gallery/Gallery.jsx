@@ -48,7 +48,7 @@ function Gallery() {
             }
         };
         fetchImages();
-    }, [eventname, page]);
+    }, [eventname, page,eventImages]);
 
     useEffect(() => {
         if (loading || !hasMore) return;
@@ -132,7 +132,6 @@ function Gallery() {
             setCurrentImageIndex((prevIndex) => prevIndex - 1);
         }
     };
-  useEffect(() => {
     const handleDeleteImage = async () => {
         
         try {
@@ -152,7 +151,6 @@ function Gallery() {
             setImageToDelete(null);
         }
     };
- }, [eventImages]);
 
     const closeModal = () => {
         setShowModal(false);
