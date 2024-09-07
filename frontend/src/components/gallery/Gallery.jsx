@@ -92,6 +92,7 @@ function Gallery() {
             alert(err.message);
         } finally {
             setIsUploading(false);
+             setIsViewerOpen(false);
             setSelectedFiles([]);
         }
     };
