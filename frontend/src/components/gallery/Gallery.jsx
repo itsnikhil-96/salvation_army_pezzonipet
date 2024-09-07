@@ -173,7 +173,13 @@ function Gallery() {
     if (error) {
         return <div className="container mt-5 alert alert-danger"><h2>{error}</h2></div>;
     }
-
+     useEffect(() => {
+        if (showModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [showModal]);
     return (
         <div className="container mt-5 position-relative">
             <div style={{ minHeight: userLoginStatus ? '50px' : '0px' }}>
