@@ -19,8 +19,8 @@ function Gallery() {
     const [isViewerOpen, setIsViewerOpen] = useState(false);  
     const [currentImageIndex, setCurrentImageIndex] = useState(null);  
     
-    const [showModal, setShowModal] = useState(false);  // State for the delete confirmation modal
-    const [imageToDelete, setImageToDelete] = useState(null);  // State for the image to be deleted
+    const [showModal, setShowModal] = useState(false);  
+    const [imageToDelete, setImageToDelete] = useState(null); 
 
     const limit = 3;  
 
@@ -48,7 +48,7 @@ function Gallery() {
             }
         };
         fetchImages();
-    }, [eventname, page,eventImages]);
+    }, [eventname, page]);
 
     useEffect(() => {
         if (loading || !hasMore) return;
@@ -132,8 +132,8 @@ function Gallery() {
             setCurrentImageIndex((prevIndex) => prevIndex - 1);
         }
     };
+
     const handleDeleteImage = async () => {
-        
         try {
             const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images/${imageToDelete}`, {
                 method: 'DELETE'
@@ -141,13 +141,22 @@ function Gallery() {
             if (!res.ok) {
                 throw new Error('Failed to delete image');
             }
-            setEventImages((prevImages) => prevImages.filter(image => image !== imageToDelete));
-            alert('Image deleted successfully');
+            const updatedImages = eventImages.filter((_, index) => index !== imageToDelete);
+            setEventImages(updatedImages);
+
+            // Adjust the currentImageIndex if necessary
+            if (currentImageIndex >= updatedImages.length) {
+                setCurrentImageIndex(updatedImages.length - 1);
+            } else {
+                setCurrentImageIndex((prevIndex) => prevIndex >= 0 ? prevIndex : null);
+            }
         } catch (err) {
             alert(err.message);
         } finally {
             setShowModal(false);
-            setIsViewerOpen(false);
+            if (eventImages.length === 0 || updatedImages.length === 0) {
+                handleCloseViewer();
+            }
             setImageToDelete(null);
         }
     };
@@ -156,9 +165,8 @@ function Gallery() {
         setShowModal(false);
     };
 
-    const handleModalDelete = (image,currentImageIndex) => {
-        console.log(currentImageIndex)
-        setImageToDelete(currentImageIndex);
+    const handleModalDelete = (index) => {
+        setImageToDelete(index);
         setShowModal(true);
     };
 
@@ -167,6 +175,12 @@ function Gallery() {
             closeModal();
         }
     };
+
+    useEffect(() => {
+        if (eventImages.length === 0 && isViewerOpen) {
+            handleCloseViewer();
+        }
+    }, [eventImages]);
 
     if (error) {
         return <div className="container mt-5 alert alert-danger"><h2>{error}</h2></div>;
@@ -253,68 +267,52 @@ function Gallery() {
                 <div className="text-center loading">Loading more images...</div>
             )}
 
-            {isViewerOpen && eventImages.length > 0 && (
-                <div className="full-screen-viewer" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-                 <span className="delete fs-4 text-center position-absolute top-0 end-0 m-4" style={{ cursor: 'pointer' }} onClick={handleCloseViewer}>
-                     <ImCross className='mb-1 mx-2 p-1'/>
-                 </span>
-                    {currentImageIndex > 0 && (
-                        <button className="prev-btn" onClick={handlePrevImage}>
-                            &lt;
-                        </button>
-                    )}
-                    <div className='position-absolute top-0 start-0 m-4 '>
-                        <a
-                            href={eventImages[currentImageIndex]}
-                            download={`image-${currentImageIndex + 1}.jpg`}
-                            className="download-btn fs-3"
-                        >
-                            <span className="" style={{ cursor: 'pointer' }}>
-                                <MdDownload className='mb-1 mx-2'/>
-                            </span>
-                        </a>
-                        {userLoginStatus && (
-                            <span 
-                                className="delete fs-3" 
-                                style={{ cursor: 'pointer' }} 
-                                onClick={() => handleModalDelete(eventImages[currentImageIndex],currentImageIndex)}
-                            >
-                                <RiDeleteBin6Line className='mb-1 mx-2 deletebutton'/>
-                            </span>
-                        )}
-
+            {isViewerOpen && currentImageIndex !== null && (
+                <div
+                    className="full-screen-viewer"
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    onClick={handleCloseViewer}
+                >
+                    <div className="full-screen-content">
+                        <div className="download-icon">
+                            <a href={eventImages[currentImageIndex]} download>
+                                <MdDownload size={24} color="white" />
+                            </a>
+                        </div>
+                        <div className="delete-icon">
+                            <RiDeleteBin6Line
+                                size={24}
+                                color="white"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleModalDelete(currentImageIndex);
+                                }}
+                            />
+                        </div>
+                        <div className="close-icon" onClick={handleCloseViewer}>
+                            <ImCross size={18} color="white" />
+                        </div>
+                        <img
+                            src={eventImages[currentImageIndex]}
+                            alt={`Full view for ${eventname}`}
+                            className="full-screen-image"
+                        />
                     </div>
-                    <img
-                        src={eventImages[currentImageIndex]}
-                        alt={`Gallery for ${eventname}`}
-                        className="full-screen-image"
-                    />
-                    {currentImageIndex < eventImages.length - 1 && (
-                        <button className="next-btn" onClick={handleNextImage}>
-                            &gt;
-                        </button>
-                    )}
                 </div>
             )}
 
-            {/* Modal for Delete Confirmation */}
             {showModal && (
-                <div className="modal show" style={{ display: 'block' }} tabIndex="-1" role="dialog" onClick={handleOutsideClick}>
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Confirm Deletion</h5>
-                                <button type="button" className="close btn btn-danger px-2 py-0" onClick={closeModal}>
-                                    <span className='fs-4'>&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Do you really want to delete this image?</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-                                <button type="button" className="btn btn-danger" onClick={handleDeleteImage}>Delete</button>
-                            </div>
+                <div className="modal-overlay" onClick={handleOutsideClick}>
+                    <div className="modal-content">
+                        <h3>Are you sure you want to delete this image?</h3>
+                        <div className="modal-buttons">
+                            <button className="btn btn-danger" onClick={handleDeleteImage}>
+                                Delete
+                            </button>
+                            <button className="btn btn-secondary" onClick={closeModal}>
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
