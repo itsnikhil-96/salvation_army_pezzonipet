@@ -32,7 +32,7 @@ function Gallery() {
         const fetchImages = async () => {
             setLoading(true); 
             try {
-                const res = await fetch(https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit});
+                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
@@ -77,7 +77,7 @@ function Gallery() {
             formData.append('images', file);
         });
         try {
-            const res = await fetch(https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images, {
+            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images`, {
                 method: 'POST',
                 body: formData
             });
@@ -135,21 +135,21 @@ function Gallery() {
     const handleDeleteImage = async () => {
         
         try {
-            const res = await fetch(https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images/${imageToDelete}, {
+            const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}/images/${imageToDelete}`, {
                 method: 'DELETE'
             });
             if (!res.ok) {
                 throw new Error('Failed to delete image');
             }
+            setEventImages((prevImages) => prevImages.filter(image => image !== imageToDelete));
             alert('Image deleted successfully');
             setEventImages([]);
             setPage(0);
-            setHasMore(true);
+            
         } catch (err) {
             alert(err.message);
         } finally {
             setShowModal(false);
-            setIsViewerOpen(false);
             setImageToDelete(null);
         }
     };
@@ -173,13 +173,7 @@ function Gallery() {
     if (error) {
         return <div className="container mt-5 alert alert-danger"><h2>{error}</h2></div>;
     }
-     useEffect(() => {
-        if (isViewerOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-    }, [showModal]);
+
     return (
         <div className="container mt-5 position-relative">
             <div style={{ minHeight: userLoginStatus ? '50px' : '0px' }}>
@@ -240,7 +234,7 @@ function Gallery() {
                                     <img 
                                         src={imageData} 
                                         className="galleryimg" 
-                                        alt={Gallery for ${eventname}} 
+                                        alt={`Gallery for ${eventname}`} 
                                     />
                                 </div>
                             </div>
@@ -274,7 +268,7 @@ function Gallery() {
                     <div className='position-absolute top-0 start-0 m-4 '>
                         <a
                             href={eventImages[currentImageIndex]}
-                            download={image-${currentImageIndex + 1}.jpg}
+                            download={`image-${currentImageIndex + 1}.jpg`}
                             className="download-btn fs-3"
                         >
                             <span className="" style={{ cursor: 'pointer' }}>
@@ -294,7 +288,7 @@ function Gallery() {
                     </div>
                     <img
                         src={eventImages[currentImageIndex]}
-                        alt={Gallery for ${eventname}}
+                        alt={`Gallery for ${eventname}`}
                         className="full-screen-image"
                     />
                     {currentImageIndex < eventImages.length - 1 && (
