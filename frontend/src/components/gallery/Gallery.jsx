@@ -143,6 +143,9 @@ function Gallery() {
             }
             setEventImages((prevImages) => prevImages.filter(image => image !== imageToDelete));
             alert('Image deleted successfully');
+            setEventImages([]);
+            setPage(0);
+            
         } catch (err) {
             alert(err.message);
         } finally {
