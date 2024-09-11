@@ -8,32 +8,29 @@ function Events() {
     const { userLoginStatus, currentUser } = useContext(userLoginContext);
     const [years, setYears] = useState([]);
     const [eventsByYear, setEventsByYear] = useState({});
-    const [currentYearIndex, setCurrentYearIndex] = useState(0); // Track the index of the current year being displayed
-    const [eventPages, setEventPages] = useState({}); // Tracks the pagination for events per year
+    const [currentYearIndex, setCurrentYearIndex] = useState(0);
+    const [eventPages, setEventPages] = useState({});
     const [loadingEvents, setLoadingEvents] = useState(false);
     const [error, setError] = useState(null);
-    const [hasMoreEvents, setHasMoreEvents] = useState(true); // Control if more events can be loaded
+    const [hasMoreEvents, setHasMoreEvents] = useState(true);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [username, setUsername] = useState("");
+    const [deleted,setdeleted]=useState([]);
+
     const observerEvents = useRef();
     const navigate = useNavigate();
+    const limit = 1;
 
-    const limit = 1; // Number of events per fetch
-
-    // Fetch years only once and store them in state
     useEffect(() => {
         const fetchYears = async () => {
             try {
                 const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/years`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
                 const fetchedYears = data.payload || [];
 
-                if (fetchedYears.length === 0) {
-                    setError("No years found");
-                } else {
-                    setYears(fetchedYears);
-                }
+                if (fetchedYears.length === 0) setError("No years found");
+                else setYears(fetchedYears);
             } catch (error) {
                 console.error("Fetching error:", error);
                 setError(error.message);
@@ -41,23 +38,21 @@ function Events() {
         };
 
         fetchYears();
-    }, []); // Empty dependency array ensures it only runs once
+    }, [deleted]);
 
-    // Fetch events for the current year
     useEffect(() => {
         if (years.length === 0 || currentYearIndex >= years.length) return;
 
-        const currentYear = years[currentYearIndex].year;
+        const currentYear = years[currentYearIndex]?.year;
+        if (!currentYear) return; // Add a guard clause
 
         const fetchEventsForYear = async () => {
-            if (!hasMoreEvents) return; // Don't fetch if no more events are available
+            if (!hasMoreEvents) return;
             setLoadingEvents(true);
             try {
                 const currentPage = eventPages[currentYear] || 0;
                 const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/year/${currentYear}?skip=${currentPage * limit}&limit=${limit}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
                 const fetchedEvents = data.payload || [];
 
@@ -66,14 +61,11 @@ function Events() {
                     [currentYear]: [...(prevEventsByYear[currentYear] || []), ...fetchedEvents],
                 }));
 
-                if (fetchedEvents.length < limit) {
-                    setHasMoreEvents(false); // No more events to load for this year
-                } else {
-                    setEventPages(prevPages => ({
-                        ...prevPages,
-                        [currentYear]: currentPage + 1,
-                    }));
-                }
+                if (fetchedEvents.length < limit) setHasMoreEvents(false);
+                else setEventPages(prevPages => ({
+                    ...prevPages,
+                    [currentYear]: currentPage + 1,
+                }));
             } catch (error) {
                 console.error("Fetching error:", error);
                 setError(error.message);
@@ -85,7 +77,6 @@ function Events() {
         fetchEventsForYear();
     }, [years, currentYearIndex, eventPages, hasMoreEvents]);
 
-    // Observer to load more events
     const lastEventElementRef = useCallback((year, node) => {
         if (loadingEvents || !hasMoreEvents) return;
         if (observerEvents.current) observerEvents.current.disconnect();
@@ -108,6 +99,47 @@ function Events() {
         setSelectedEvent(event);
     };
 
+    const handleConfirmDelete = async () => {
+        if (username === currentUser.username) {
+            try {
+                const encodedEventName = encodeURIComponent(selectedEvent.eventname);
+                const encodedUsername = encodeURIComponent(username);
+                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
+                    method: 'DELETE',
+                });
+
+                if (res2.ok) {
+                    const year = selectedEvent.year;
+                    setEventsByYear(prevEventsByYear => ({
+                        ...prevEventsByYear,
+                        [year]: (prevEventsByYear[year] || []).filter(event => event.eventname !== selectedEvent.eventname),
+                    }));
+                    alert('Successfully deleted event');
+                    setSelectedEvent(null);
+                    setEventPages(0);
+                    setUsername("");
+                    setYears([]);
+                    setEventsByYear({});
+                    setCurrentYearIndex(0);
+                    setdeleted(prevPages => ({
+                        ...prevPages,
+                        [year]: (prevPages[year] || 0) + 1,
+                    }));
+                    setHasMoreEvents(true);
+                    setError(null);
+                } else {
+                    const result = await res2.json();
+                    alert(`Failed to delete event: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting event:', error);
+                alert('Failed to delete event. Please try again later.');
+            }
+        } else {
+            alert('Username does not match!');
+        }
+    };
+
     const closeModal = () => {
         setSelectedEvent(null);
         setUsername("");
@@ -119,11 +151,10 @@ function Events() {
         }
     }, []);
 
-    // Move to the next year when events for the current year are done loading
     useEffect(() => {
         if (!hasMoreEvents && currentYearIndex < years.length - 1) {
             setCurrentYearIndex(currentYearIndex + 1);
-            setHasMoreEvents(true); // Reset for the next year
+            setHasMoreEvents(true);
         }
     }, [hasMoreEvents, currentYearIndex, years]);
 
@@ -143,7 +174,7 @@ function Events() {
             <div className='row text-center'>
                 {error && <div>Error: {error}</div>}
                 {years.slice(0, currentYearIndex + 1).map((yearData) => {
-                    const year = yearData.year;
+                    const year = yearData?.year; // Add a guard clause
                     const events = eventsByYear[year] || [];
 
                     return (
@@ -200,6 +231,41 @@ function Events() {
                 <div>
                     {loadingEvents && <div className='loading'>Loading Events please wait</div>}
                 </div>
+                {selectedEvent && (
+                <div className="modal show" tabIndex="-1" style={{ display: "block" }} onClick={handleOutsideClick}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Confirm Delete</h5>
+                                <button type="button" className="btn-close" onClick={closeModal}></button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Are you sure you want to delete the event: <strong>{selectedEvent.eventname}</strong>?</p>
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label">
+                                        Please enter your username to confirm:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                                    Cancel
+                                </button>
+                                <button type="button" className="btn btn-danger" onClick={handleConfirmDelete}>
+                                    Delete Event
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             </div>
         </div>
     );

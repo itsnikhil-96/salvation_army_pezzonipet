@@ -117,7 +117,6 @@ eventsApp.get('/years', async (req, res) => {
     try {
         const yearsCollection = req.app.get('years');
         
-        // Fetch and convert the cursor to an array
         const yearsList = await yearsCollection.find().sort({ year: -1 }).toArray();
 
         if (yearsList.length === 0) {
