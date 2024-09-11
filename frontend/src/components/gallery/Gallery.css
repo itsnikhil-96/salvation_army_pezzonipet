@@ -9,6 +9,33 @@
     height: 100%;
     object-fit: cover; 
 }
+.scrolling {
+  white-space: nowrap;  
+  color:cadetblue;
+  font-weight: bold;
+  box-sizing: border-box;
+  width: 100%;         
+}
+
+.scrolling::after {
+  content: "";
+  display: inline-block;
+  width: 100%; 
+}
+
+.scrolling {
+  animation: scrolling-text 12s linear infinite;
+}
+
+@keyframes scrolling-text {
+  from {
+    transform: translateX(100%); 
+  }
+  to {
+    transform: translateX(-100%); 
+  }
+}
+
 .delete{
     background-color: rgb(244, 85, 85);
     color: white;

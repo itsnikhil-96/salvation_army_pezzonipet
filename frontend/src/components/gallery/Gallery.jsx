@@ -18,9 +18,9 @@ function Gallery() {
     const [isUploading, setIsUploading] = useState(false);  
     const [isViewerOpen, setIsViewerOpen] = useState(false);  
     const [currentImageIndex, setCurrentImageIndex] = useState(null);  
-    
-    const [showModal, setShowModal] = useState(false);  // State for the delete confirmation modal
-    const [imageToDelete, setImageToDelete] = useState(null);  // State for the image to be deleted
+
+    const [showModal, setShowModal] = useState(false);  
+    const [imageToDelete, setImageToDelete] = useState(null);  
 
     const limit = 3;  
 
@@ -32,7 +32,7 @@ function Gallery() {
         const fetchImages = async () => {
             setLoading(true); 
             try {
-                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/${eventname}?skip=${page * limit}&limit=${limit}`);
+                const res = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/event/${eventname}?skip=${page * limit}&limit=${limit}`);
                 if (!res.ok) {
                     throw new Error('Event not found');
                 }
@@ -172,7 +172,7 @@ function Gallery() {
     }
 
     return (
-        <div className="container mt-5 position-relative">
+        <div className="container mt-4 position-relative">
             <div style={{ minHeight: userLoginStatus ? '50px' : '0px' }}>
                 {userLoginStatus && (
                     <>
@@ -214,7 +214,7 @@ function Gallery() {
                     </>
                 )}
             </div>
-
+            <div className='scrolling english'>Click on any specific pic to view it on full screen</div>
             <h1 className="text-center mb-3 fs-3 heading">{eventname} Gallery</h1>
             <div className="row">
                 {eventImages.length > 0 ? (

@@ -10,7 +10,11 @@ Content-Type: application/json
     "eventname":"VBS2024",
     "events":[]
 }
+###
+get https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/years
 
+###
+get https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/2024
 ###
 put https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/VBS 2024
 Content-Type: application/json
