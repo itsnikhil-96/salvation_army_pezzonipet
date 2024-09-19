@@ -118,8 +118,8 @@ function Header1() {
                           </span>
                           <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} aria-labelledby='navbarDropdown'>
                             <li>
-                              <Link to='/viewprofile' className='dropdown-item' onClick={handleLinkClick}>
-                                View Profile
+                              <Link to='/deletedevents' className='dropdown-item' onClick={handleLinkClick}>
+                                Deleted Events
                               </Link>
                             </li>
                             <li>

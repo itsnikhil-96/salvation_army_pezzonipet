@@ -20,8 +20,9 @@
   overflow: hidden;
 }
 
-.modal-dialog {
-  margin: 5% auto;
+.modal-body
+{
+  text-align: start;
 }
 
 .modal-header {

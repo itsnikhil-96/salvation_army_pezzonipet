@@ -5,7 +5,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-  origin: 'https://salvation-army-pezzonipet-cyf5.vercel.app' 
+  origin: 'http://localhost:5173' 
 }));
 
 app.use(express.json());
@@ -40,7 +40,7 @@ mClient.connect()
     });
 
     app.use((err, req, res, next) => {
-      console.error("Error occurred:", err);  // Log the error
+      console.error("Error occurred:", err); 
       res.status(500).send({ message: "An error occurred", errorMessage: err.message });
     });
 

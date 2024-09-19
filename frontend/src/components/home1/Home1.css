@@ -1,5 +1,3 @@
-/* Home1.css */
-
 .carousel-inner {
     width: 100%;
     height: auto; 
@@ -25,7 +23,7 @@
 .carousel-control-prev-icon:after,
 .carousel-control-next-icon:after {
     font-size: 20px; 
-    color: white; /* Changes the icon color */
+    color: white; 
 }
 .captionpara
 {

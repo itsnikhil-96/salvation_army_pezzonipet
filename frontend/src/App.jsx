@@ -7,12 +7,10 @@ import Officers from './components/officers/Officers';
 import Login from "./components/login/Login";
 import Register from "./components/register/Register";
 import Gallery from "./components/gallery/Gallery";
-import EditProfile from "./components/editprofile/EditProfile";
 import AddEvent from "./components/addevent/AddEvent";
 import Events from "./components/events/Events";
 import Home1 from "./components/home1/Home1";
-import ViewProfile from "./components/viewprofile/ViewProfile";
-
+import DeletedEvents from "./components/deletedevents/DeletedEvents";
 function App() {
   const browserRouter = createBrowserRouter([
     {
@@ -59,17 +57,14 @@ function App() {
            element: <Gallery />
         },
         {
-          path :"editprofile",
-          element:<EditProfile/>
+          path :"deletedevents",
+          element:<DeletedEvents/>
         },
         {
           path:"addevent",
           element:<AddEvent/>
-        },
-        {
-          path:"viewprofile",
-          element:<ViewProfile/>
         }
+       
       ]
     }
   ]);

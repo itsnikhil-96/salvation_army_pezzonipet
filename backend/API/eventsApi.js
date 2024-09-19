@@ -1,3 +1,26 @@
+/* 
+Backend Routes:
+Creating New Event
+   --Storing of Event details in Events,Years Collection
+   --Event Name is unique property (Only one event can be to a name (both in events,deletedevents collections))
+Getting all Years at a time
+    --Sending Years data in descending order
+Getting Events of a Specific Year using page loading
+    --Sending Events to Events page (Only EventName,Main Logo, date is send ,not gallery images to reduce load)
+Getting Images of Specific Event using Lazy Loading
+    --Sending Images of an specific Event
+Adding More pics to existing Event gallery
+    --Adding More Pics to already existing Event
+Delete an Event
+    --Delete an event details in years, events collection
+    --Adding that details in deletedevents collection for restore
+Delete a specific pic of an Event 
+    --Performed deletion of one selected pic(No restore)
+Adding of Deleted Event to Event page
+    -- Adding same details to events page
+    --Retriving that id and stroing it in years collection
+    --Removing it in deletedevents collection
+*/
 const express = require('express');
 const multer = require('multer');
 const { GridFSBucket, ObjectId } = require('mongodb');
@@ -21,6 +44,7 @@ const getImageDataById = async (imageId, gridfsBucket) => {
     }
 };
 
+//Creating New Event
 eventsApp.post('/create', upload.fields([
     { name: 'mainLogo', maxCount: 1 },
     { name: 'images', maxCount: 15 } ]), async (req, res) => {
@@ -113,6 +137,7 @@ eventsApp.post('/create', upload.fields([
      }
 });
 
+//Getting all Years at a time
 eventsApp.get('/years', async (req, res) => {
     try {
         const yearsCollection = req.app.get('years');
@@ -130,7 +155,7 @@ eventsApp.get('/years', async (req, res) => {
     }
 });
 
-
+//Getting Events of a Specific Year using page loading
 eventsApp.get('/events/year/:year', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
@@ -165,25 +190,20 @@ eventsApp.get('/events/year/:year', async (req, res) => {
     }
 });
 
+//Getting Images of Specific Event using Lazy Loading
 eventsApp.get('/events/event/:eventname', async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
         const gridfsBucket = req.app.get('gridfsBucket'); 
         const eventname = req.params.eventname;
 
-        const skip = parseInt(req.query.skip);
-        const limit = parseInt(req.query.limit);
-
         const event = await eventsCollection.findOne({ eventname });
-        console.log(event);
         if (!event)
              {
                   return res.status(404).send({ message: 'Event not found' });
              }
 
-        
-        const paginatedImageIds = event.imagesIds.slice(skip, skip + limit);
-
+    
         const imagePromises = paginatedImageIds.map(async imageId => {
             try {
                 const imageData = await getImageDataById(imageId, gridfsBucket);
@@ -204,6 +224,7 @@ eventsApp.get('/events/event/:eventname', async (req, res) => {
     }
 });
 
+//Adding More pics to existing Event gallery
 eventsApp.post('/events/:eventname/images', upload.array('images', 15), async (req, res) => {
     try {
         const eventsCollection = req.app.get('events');
@@ -244,6 +265,7 @@ eventsApp.post('/events/:eventname/images', upload.array('images', 15), async (r
     }
 });
 
+//Delete an Event
 eventsApp.delete('/events', async (req, res) => {
     try {
         const eventName = decodeURIComponent(req.query.eventname);
@@ -265,7 +287,12 @@ eventsApp.delete('/events', async (req, res) => {
             { $pull: { events: new ObjectId(eventId) } } 
         );
 
+        const yearDoc = await yearsCollection.findOne({ year: eventYear });
+        if (yearDoc && yearDoc.events.length === 0) {
 
+            await yearsCollection.deleteOne({ year: eventYear });
+            
+        }
         const deletedEvent = {
             ...event,
             deletedBy: req.query.username, 
@@ -283,8 +310,7 @@ eventsApp.delete('/events', async (req, res) => {
     }
 });
 
-
-
+//Delete a specific pic of an Event 
 eventsApp.delete('/events/:eventname/images/:index', async (req, res) => {
     try {
         const { eventname, index } = req.params;
@@ -317,5 +343,85 @@ eventsApp.delete('/events/:eventname/images/:index', async (req, res) => {
     }
 });
 
+eventsApp.get('/deleted-events', async (req, res) => {
+    try {
+        const deletedEventsCollection = req.app.get('deletedevents');
+
+        // Retrieve all deleted events from the collection
+        const deletedEvents = await deletedEventsCollection.find().toArray();
+
+        if (deletedEvents.length === 0) {
+            return res.status(404).send({ message: 'No deleted events found' });
+        }
+
+        res.status(200).send({
+            message: 'Deleted events retrieved successfully',
+            payload: deletedEvents
+        });
+    } catch (error) {
+        console.error('Error fetching deleted events:', error);
+        res.status(500).send({ message: 'Failed to retrieve deleted events', error: error.message });
+    }
+});
+
+// Adding of Deleted Event to Event page
+eventsApp.post('/events/restore', async (req, res) => {
+    try {
+        const eventName = req.body.eventname; // Event name to be restored
+        
+        const eventsCollection = req.app.get('events');
+        const deletedEventsCollection = req.app.get('deletedevents');
+        const yearsCollection = req.app.get('years');
+
+        // Find the event in the deleted events collection
+        const deletedEvent = await deletedEventsCollection.findOne({ eventname: eventName });
+        if (!deletedEvent) {
+            return res.status(404).send({ message: 'Deleted event not found' });
+        }
+
+        // Restore the event details to the events collection
+        const restoredEvent = {
+            eventname: deletedEvent.eventname,
+            dateOfEvent: deletedEvent.dateOfEvent,
+            mainLogoId: deletedEvent.mainLogoId,
+            imagesIds: deletedEvent.imagesIds,
+        };
+
+        const result = await eventsCollection.insertOne(restoredEvent);
+        const restoredEventId = result.insertedId;
+
+        // Get the year from the event date
+        const eventYear = new Date(deletedEvent.dateOfEvent).getFullYear();
+
+        // Check if the year exists in the years collection
+        const yearRecord = await yearsCollection.findOne({ year: eventYear });
+        
+        if (yearRecord) {
+            // If the year exists, add the event to the events array
+            await yearsCollection.updateOne(
+                { year: eventYear },
+                { $push: { events: restoredEventId } }
+            );
+        } else {
+            // If the year does not exist, insert a new year record with the event
+            await yearsCollection.insertOne({
+                year: eventYear,
+                events: [restoredEventId]
+            });
+        }
+
+        // Remove the event from the deleted events collection
+        await deletedEventsCollection.deleteOne({ eventname: eventName });
+
+        // Respond with success
+        res.status(200).send({
+            message: 'Event restored successfully',
+            restoredEvent: restoredEvent,
+        });
+    } catch (error) {
+        console.error('Error restoring event:', error);
+        res.status(500).send({ message: 'Failed to restore event', error: error.message });
+    }
+});
 
 module.exports = eventsApp;
