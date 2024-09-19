@@ -12,7 +12,7 @@ function DeletedEvents() {
     const fetchDeletedEvents = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/event-api/deleted-events'); // Replace with your actual backend route
+        const response = await axios.get('https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/deleted-events'); // Replace with your actual backend route
         setDeletedEvents(response.data.payload);
         setLoading(false);
       } catch (error) {
@@ -27,7 +27,7 @@ function DeletedEvents() {
   // Function to restore a deleted event
   const restoreEvent = async (eventname) => {
     try {
-      await axios.post('http://localhost:5000/event-api/events/restore', { eventname }); // Replace with your actual restore route
+      await axios.post('https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/restore', { eventname }); // Replace with your actual restore route
       alert(`Event ${eventname} restored successfully`);
 
       // Trigger re-fetch of deleted events

@@ -5,7 +5,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173' 
+  origin: 'https://salvation-army-pezzonipet-cyf5.vercel.app' 
 }));
 
 app.use(express.json());

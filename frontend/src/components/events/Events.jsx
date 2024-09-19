@@ -24,7 +24,7 @@ function Events() {
     useEffect(() => {
         const fetchYears = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/event-api/years`);
+                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/years`);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
                 const fetchedYears = data.payload || [];
@@ -51,7 +51,7 @@ function Events() {
             setLoadingEvents(true);
             try {
                 const currentPage = eventPages[currentYear] || 0;
-                const response = await fetch(`http://localhost:5000/event-api/events/year/${currentYear}?skip=${currentPage * limit}&limit=${limit}`);
+                const response = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events/year/${currentYear}?skip=${currentPage * limit}&limit=${limit}`);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
                 const fetchedEvents = data.payload || [];
@@ -104,7 +104,7 @@ function Events() {
             try {
                 const encodedEventName = encodeURIComponent(selectedEvent.eventname);
                 const encodedUsername = encodeURIComponent(username);
-                const res2 = await fetch(`http://localhost:5000/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
+                const res2 = await fetch(`https://salvation-army-pezzonipet-gn1u.vercel.app/event-api/events?eventname=${encodedEventName}&username=${encodedUsername}`, {
                     method: 'DELETE',
                 });
 
