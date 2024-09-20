@@ -61,33 +61,8 @@ h2 {
     width: 100%;
   }
 
-  thead {
-    display: none; /* Hide thead for small screens */
-  }
 
-  tr {
-    display: block;
-    margin-bottom: 10px; /* Add space between rows */
-  }
 
-  td {
-    display: block;
-    text-align: right; /* Align to the right for readability */
-    padding: 10px;
-    position: relative;
-    border: none;
-    border-bottom: 1px solid #ddd;
-  }
-
-  td:before {
-    content: attr(data-label); /* Add label for each cell */
-    position: absolute;
-    left: 0;
-    width: 50%;
-    padding-left: 15px;
-    font-weight: bold;
-    text-align: left;
-  }
 }
 
 /* Media Query for smaller mobile devices (300px width) */
