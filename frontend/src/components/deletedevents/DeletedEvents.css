@@ -41,5 +41,38 @@ h2 {
     border-radius: 10px;
     transition: background-color 0.3s ease;
   }
-  
+  @media (max-width: 600px) {
+  table {
+    width: 100%;
+    font-size: 12px; /* Smaller font for better fit */
+  }
+
+  th, td {
+    padding: 8px 10px; /* Reduce padding for better fit */
+  }
+
+  /* Making table responsive and scrollable */
+  .english {
+    overflow-x: auto;
+  }
+
+  table {
+    display: block; /* Block display to allow scrolling */
+    width: 100%;
+  }
+
+
+
+}
+
+/* Media Query for smaller mobile devices (300px width) */
+@media (max-width: 300px) {
+  table {
+    font-size: 10px; /* Even smaller font for ultra small screens */
+  }
+
+  .restorebtn {
+    padding: 6px 8px; /* Smaller padding for the button */
+  }
+}
  
