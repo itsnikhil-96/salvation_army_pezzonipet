@@ -193,36 +193,73 @@ eventsApp.get('/events/year/:year', async (req, res) => {
 //Getting Images of Specific Event using Lazy Loading
 eventsApp.get('/events/event/:eventname', async (req, res) => {
     try {
+
         const eventsCollection = req.app.get('events');
         const gridfsBucket = req.app.get('gridfsBucket'); 
+        
         const eventname = req.params.eventname;
+        
+        const skip = parseInt(req.query.skip) || 0;
+        const limit = parseInt(req.query.limit) || 10; 
 
         const event = await eventsCollection.findOne({ eventname });
-        if (!event)
-             {
-                  return res.status(404).send({ message: 'Event not found' });
-             }
 
-    
+        if (!event) {
+            return res.status(404).send({ message: 'Event not found' });
+        }
+
+        const imageIds = event.imagesIds || [];
+
+        if (imageIds.length === 0) {
+            return res.status(200).send({ payload: [] }); 
+        }
+
+        const paginatedImageIds = imageIds.slice(skip, skip + limit);
+
+        const getImageDataById = async (imageId, gridfsBucket) => {
+            return new Promise((resolve, reject) => {
+
+                const downloadStream = gridfsBucket.openDownloadStream(new ObjectId(imageId));
+                
+                let chunks = [];
+                downloadStream.on('data', chunk => {
+                    chunks.push(chunk);
+                });
+                downloadStream.on('end', () => {
+                    const imageData = Buffer.concat(chunks); 
+                    resolve(imageData);
+                });
+                downloadStream.on('error', err => {
+                    reject(err);  
+                });
+            });
+        };
+
+        // Fetch images from GridFS
         const imagePromises = paginatedImageIds.map(async imageId => {
             try {
                 const imageData = await getImageDataById(imageId, gridfsBucket);
-                return `data:image/jpeg;base64,${imageData.toString('base64')}`;
+                return `data:image/jpeg;base64,${imageData.toString('base64')}`;  // Return as base64
             } catch (error) {
                 console.error(`Error fetching image ${imageId}:`, error);
-                return null;
+                return null;  // Skip failed images
             }
         });
 
         const images = await Promise.all(imagePromises);
+
+        // Filter out any null values (in case of errors)
         const filteredImages = images.filter(image => image !== null);
 
+        // Send the response with the images
         res.status(200).send({ payload: filteredImages });
     } catch (error) {
         console.error('Error fetching event images:', error);
         res.status(500).send({ message: 'Failed to retrieve images', error: error.message });
     }
 });
+
+
 
 //Adding More pics to existing Event gallery
 eventsApp.post('/events/:eventname/images', upload.array('images', 15), async (req, res) => {
